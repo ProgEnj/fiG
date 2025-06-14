@@ -1,0 +1,56 @@
+services:
+  proxy:
+    container_name: reverseproxy
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - nginx-static-data:/static/gifs/
+    ports:
+      - 80:80
+
+  frontend:
+    container_name: figfront
+    build:
+      context: ./Frontend/
+      dockerfile: Dockerfile
+  
+  backend:
+    container_name: figback
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    volumes:
+        - nginx-static-data:/static/gifs/
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+      image: postgres
+      container_name: db
+      restart: always
+      secrets:
+        - db-password
+      volumes:
+        - figdb-data:/var/lib/postgresql/data
+      environment:
+        - POSTGRES_DB=figdb
+        - POSTGRES_USER=postgresdocker
+        - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      ports:
+        - 5433:5432
+      healthcheck:
+        test: [ "CMD", "pg_isready", "--username=postgresdocker", "--dbname=figdb", ]
+        interval: 1s
+        timeout: 5s
+        retries: 5
+
+volumes:
+  figdb-data:
+  nginx-static-data:
+
+secrets:
+  db-password:
+    file: secrets/db-password.txt
+      
