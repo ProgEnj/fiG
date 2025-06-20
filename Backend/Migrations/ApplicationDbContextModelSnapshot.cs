@@ -127,6 +127,9 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Hash")
+                        .IsUnique();
+
                     b.ToTable("StorageItems");
                 });
 

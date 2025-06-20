@@ -215,32 +215,6 @@ namespace Backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "TagStorageItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TagId = table.Column<int>(type: "integer", nullable: false),
-                    StorageItemId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TagStorageItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TagStorageItems_StorageItems_StorageItemId",
-                        column: x => x.StorageItemId,
-                        principalTable: "StorageItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TagStorageItems_Tags_TagId",
-                        column: x => x.TagId,
-                        principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -279,19 +253,15 @@ namespace Backend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_StorageItems_Hash",
+                table: "StorageItems",
+                column: "Hash",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StorageItemTag_TagsId",
                 table: "StorageItemTag",
                 column: "TagsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TagStorageItems_StorageItemId",
-                table: "TagStorageItems",
-                column: "StorageItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TagStorageItems_TagId",
-                table: "TagStorageItems",
-                column: "TagId");
         }
 
         /// <inheritdoc />
@@ -314,9 +284,6 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "StorageItemTag");
-
-            migrationBuilder.DropTable(
-                name: "TagStorageItems");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

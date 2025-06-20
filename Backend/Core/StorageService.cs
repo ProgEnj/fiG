@@ -5,6 +5,7 @@ using Backend.Identity;
 using Backend.Model;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Core;
 
@@ -26,19 +27,8 @@ public class StorageService : IStorageService
      * Remove file, Remove db entry
      * Find file by name, tags
      * Check file header for gif
-     *
-     * Order: Receive from frontend -> check isGif -> check if user exists -> check if gif already exists ->
-     * check if tags already exists -> add new tags -> store on disk -> create db entry
      */
 
-    // public Task<Result<bool>> isFileAlreadyExists()
-    // {
-    // }
-    
-    // public async Task<Result> CreateDBEntryAsync(StorageItemRequestDTO storageItemDTO)
-    // {
-    // }
-    
     // public async Task<Result> StoreFileAsync(StorageItem item)
     // {
     // }
@@ -60,7 +50,19 @@ public class StorageService : IStorageService
             }
         }
         
-        // Check if gif already exists by hash
+        // Check if tags already exist
+
+        List<Tag> tags = new List<Tag>();
+        foreach (var tagName in storageItemDTO.tags)
+        {
+            var foundTag = _context.Tags.FirstOrDefault(x => x.Name == tagName);
+            if (foundTag == null)
+            {
+                tags.Add(new Tag() { Name = tagName }); 
+                continue;
+            }
+            tags.Add(foundTag);
+        }
         
         var created = DateTime.UtcNow;
     
@@ -70,12 +72,11 @@ public class StorageService : IStorageService
         var storageItem = new StorageItem()
         {
             UserID = user.Id, Hash = hash, Name = storageItemDTO.Name,
-            Tags = storageItemDTO.tags, Path = path, Created = created, Width = dimensions.width, Height = dimensions.height 
+            Tags = tags, Path = path, Created = created, Width = dimensions.width, Height = dimensions.height 
         };
 
         await _context.StorageItems.AddAsync(storageItem);
         await _context.SaveChangesAsync();
-        Console.WriteLine("I'm here!");
         
         return Result.Success();
     }

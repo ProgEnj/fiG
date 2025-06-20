@@ -6,6 +6,6 @@ public class StorageItemRequestDTO
 {
     public string Username { get; set; }
     public string Name { get; set; }
-    public List<Tag> tags = [];
+    public List<string> tags { get; set; }
     public IFormFile File { get; set; }
 }

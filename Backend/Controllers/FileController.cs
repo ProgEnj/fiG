@@ -12,11 +12,10 @@ namespace Backend.Controllers;
 public class FileController(IStorageService _storageService) : ControllerBase
 {
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadFile([FromForm] StorageItemRequestDTO storageItem, [FromForm] string tags)
+    public async Task<IActionResult> UploadFile([FromForm] StorageItemRequestDTO storageItemDTO, [FromForm] string tags)
     {
-        storageItem.tags = JsonSerializer.Deserialize<List<string>>(tags).Select(x => new Tag { Name = x }).ToList();
-        // Console.WriteLine(storageItem.Name + storageItem.Username + " tags: " + string.Join(", ", storageItem.tags.Select(x => x.Name)));
-        
-        return await _storageService.UploadGIFAsync(storageItem) == Result.Success() ? Ok() : StatusCode(500);
+        storageItemDTO.tags = JsonSerializer.Deserialize<List<string>>(tags);
+        var result = await _storageService.UploadGIFAsync(storageItemDTO);
+        return result.IsSuccess ? Ok() : StatusCode(500);
     }
 }

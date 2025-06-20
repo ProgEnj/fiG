@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace Backend.Model;
 
+[Index(nameof(Hash), IsUnique = true)]
 public class StorageItem
 {
     public int Id { get; set; }
