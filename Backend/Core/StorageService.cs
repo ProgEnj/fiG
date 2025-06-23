@@ -23,10 +23,10 @@ public class StorageService : IStorageService
     }
     
     /*
-     * Recieve file, check metadata, Initialize object, check for already exists, create db entry, save on storage
+     * Recieve file[x], check metadata[x], initialize object[x], check for already exists[x], create db entry[x], save on storage[x]
      * Remove file, Remove db entry
      * Find file by name, tags
-     * Check file header for gif
+     * Check file header for gif[x]
      */
 
     // public async Task<Result> StoreFileAsync(StorageItem item)
@@ -51,7 +51,6 @@ public class StorageService : IStorageService
         }
         
         // Check if tags already exist
-
         List<Tag> tags = new List<Tag>();
         foreach (var tagName in storageItemDTO.tags)
         {
@@ -67,7 +66,7 @@ public class StorageService : IStorageService
         var created = DateTime.UtcNow;
     
         var dimensions = MetadataExtract.ExtractGIFDimensions(storageItemDTO.File);
-        var path = Path.Combine(PATH, hash, storageItemDTO.Name);
+        var path = Path.Combine(PATH, hash.Substring(0, 10), storageItemDTO.Name + ".gif");
 
         var storageItem = new StorageItem()
         {
@@ -77,6 +76,23 @@ public class StorageService : IStorageService
 
         await _context.StorageItems.AddAsync(storageItem);
         await _context.SaveChangesAsync();
+        
+        var saveResult = await SaveInStorage(storageItem, storageItemDTO.File);
+        if (!saveResult.IsSuccess) return Result.Failure(StorageServiceErrors.FailedSaveOnStorage);
+        
+        return Result.Success();
+    }
+
+    public async Task<Result> SaveInStorage(StorageItem storageItem, IFormFile file)
+    {
+        var isExists = File.Exists(storageItem.Path);
+        if (isExists) Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage);
+        Directory.CreateDirectory(Path.GetDirectoryName(storageItem.Path));
+        
+        using (var fileStream = File.Create(storageItem.Path))
+        {
+            await file.CopyToAsync(fileStream);
+        }
         
         return Result.Success();
     }

@@ -1,6 +1,6 @@
 namespace Backend.ErrorHandling;
 
-public static class FileHeaderCheckErrors
+public static class MetadataExtractErrors
 {
     public static readonly Error BadExtension = new("File has bad extentsion");
     public static readonly Error NoExtension = new("File has no extension");

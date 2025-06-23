@@ -12,9 +12,9 @@ public static class MetadataExtract
     {
         var ext = Path.GetExtension(file.FileName);
         
-        if (ext == null) return Result.Failure(FileHeaderCheckErrors.BadExtension); 
-        if (ext == string.Empty) return Result.Failure(FileHeaderCheckErrors.NoExtension); 
-        if (String.CompareOrdinal(ext, ".gif") != 0) return Result.Failure(FileHeaderCheckErrors.BadExtension);
+        if (ext == null) return Result.Failure(MetadataExtractErrors.BadExtension); 
+        if (ext == string.Empty) return Result.Failure(MetadataExtractErrors.NoExtension); 
+        if (String.CompareOrdinal(ext, ".gif") != 0) return Result.Failure(MetadataExtractErrors.BadExtension);
         
         using (var stream = file.OpenReadStream())
         {
@@ -22,7 +22,7 @@ public static class MetadataExtract
             var hex = BitConverter.ToString(reader).Replace("-", string.Empty);
             
             return (String.CompareOrdinal(hex, GIFHeader87a) == 0) || (String.CompareOrdinal(hex, GIFHeader89a) == 0) 
-                ? Result.Success() : Result.Failure(FileHeaderCheckErrors.WrongExtenstion(".gif"));
+                ? Result.Success() : Result.Failure(MetadataExtractErrors.WrongExtenstion(".gif"));
         }
     }
 
