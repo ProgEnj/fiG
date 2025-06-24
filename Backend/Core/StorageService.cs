@@ -3,9 +3,7 @@ using Backend.DTOs;
 using Backend.ErrorHandling;
 using Backend.Identity;
 using Backend.Model;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Core;
 
@@ -25,13 +23,10 @@ public class StorageService : IStorageService
     /*
      * Recieve file[x], check metadata[x], initialize object[x], check for already exists[x], create db entry[x], save on storage[x]
      * Remove file, Remove db entry
+     * Retrieve gifs
      * Find file by name, tags
      * Check file header for gif[x]
      */
-
-    // public async Task<Result> StoreFileAsync(StorageItem item)
-    // {
-    // }
     
     public async Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO)
     {
@@ -75,15 +70,16 @@ public class StorageService : IStorageService
         };
 
         await _context.StorageItems.AddAsync(storageItem);
-        await _context.SaveChangesAsync();
         
-        var saveResult = await SaveInStorage(storageItem, storageItemDTO.File);
+        var saveResult = await SaveInStorageAsync(storageItem, storageItemDTO.File);
         if (!saveResult.IsSuccess) return Result.Failure(StorageServiceErrors.FailedSaveOnStorage);
+        
+        await _context.SaveChangesAsync();
         
         return Result.Success();
     }
 
-    public async Task<Result> SaveInStorage(StorageItem storageItem, IFormFile file)
+    public async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
     {
         var isExists = File.Exists(storageItem.Path);
         if (isExists) Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage);
