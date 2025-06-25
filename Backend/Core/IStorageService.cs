@@ -6,4 +6,5 @@ namespace Backend.Core;
 public interface IStorageService
 {
     public Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO);
+    public Task<Result<List<MainPageGifDTO>>> RetrieveGIFAsync();
 }

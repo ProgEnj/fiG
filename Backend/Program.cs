@@ -24,8 +24,8 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IEmailSender<ApplicationUser>, EmailSenderDummy>();
 
 // Migrations on startup:
-// var context = builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>();
-// await context.Database.MigrateAsync();
+var context = builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>();
+await context.Database.MigrateAsync();
 
 var app = builder.Build();
 

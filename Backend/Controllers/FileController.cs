@@ -16,6 +16,13 @@ public class FileController(IStorageService _storageService) : ControllerBase
     {
         storageItemDTO.tags = JsonSerializer.Deserialize<List<string>>(tags);
         var result = await _storageService.UploadGIFAsync(storageItemDTO);
-        return result.IsSuccess ? Ok() : StatusCode(500);
+        return result.IsSuccess ? Ok() : StatusCode(500, result.Error.Message);
+    }
+    
+    [HttpGet("mainpage")]
+    public async Task<IActionResult> RetrieveMainPageGifs()
+    {
+        var result = await _storageService.RetrieveGIFAsync();
+        return result.IsSuccess ? Ok(result.Value) : StatusCode(500, result.Error.Message);
     }
 }

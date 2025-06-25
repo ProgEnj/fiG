@@ -4,6 +4,7 @@ using Backend.ErrorHandling;
 using Backend.Identity;
 using Backend.Model;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Core;
 
@@ -27,6 +28,15 @@ public class StorageService : IStorageService
      * Find file by name, tags
      * Check file header for gif[x]
      */
+
+    public async Task<Result<List<MainPageGifDTO>>> RetrieveGIFAsync()
+    {
+        var gifs = await _context.StorageItems.Take(10).Select(x =>
+            // TODO: Decide if its better to do on frontend (separator replace)
+            new MainPageGifDTO(x.Name, x.Path.Replace("\\", "/"), x.Hash.Substring(0, 10), x.Tags)).ToListAsync();
+        
+        return Result.Success(gifs);
+    }
     
     public async Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO)
     {
