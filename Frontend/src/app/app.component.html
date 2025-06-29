@@ -10,13 +10,13 @@
           <button type="button" class="h-full btn"><span>Upload</span></button>
         </div>
         <div id="signin" class="h-full">
-          <button type="button" class="h-full btn"><span>Sign in</span></button>
+          <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign in</span></button>
         </div>
       </div>
     </div>
 
     <div id="search" class="pt-2 pb-2">
-        <form class="w-full max-w-md flex" role="search" aria-label="Site search">
+        <form class="w-full flex" role="search" aria-label="Site search">
 
           <label for="search-input" class="sr-only">Search</label>
 
@@ -100,4 +100,7 @@
 
   </div>
 </div>
+
+<app-authentication-form #auth></app-authentication-form>
+
 <router-outlet />

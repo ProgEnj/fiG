@@ -1,0 +1,14 @@
+@if (this.isAuthFormShown) {
+    <div id="background" (click)="this.authFormToggle()" class="w-full h-full absolute top-0 bg-slate-950/40">
+        <div id="form-wrapper" style="position: absolute; left: 50%; top: 25%; transform: translate(-50%, -50%);">
+            <div appClickStopPropagation id="auth-form-container" class="flex flex-col bg-white">
+                <div id="title">
+                    <p class="text-5xl">Sign In</p>
+                </div>
+                <div id="form">
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
