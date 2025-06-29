@@ -9,12 +9,12 @@ services:
     ports:
       - 80:80
 
-  frontend:
-    container_name: figfront
-    build:
-      context: ./Frontend/
-      dockerfile: Dockerfile
-  
+  # frontend:
+  #   container_name: figfront
+  #   build:
+  #     context: ./Frontend/
+  #     dockerfile: Dockerfile
+
   backend:
     container_name: figback
     build:
