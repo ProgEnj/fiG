@@ -33,6 +33,10 @@ img {
     &:active {
         background-color: #1447e6;
     }
+
+    &:disabled {
+        background-color: #8da7f5;
+    }
 }
 
 .no-scroll {

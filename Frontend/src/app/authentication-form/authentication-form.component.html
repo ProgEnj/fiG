@@ -1,12 +1,40 @@
 @if (this.isAuthFormShown) {
     <div id="background" (click)="this.authFormToggle()" class="w-full h-full absolute top-0 bg-slate-950/40">
-        <div id="form-wrapper" style="position: absolute; left: 50%; top: 25%; transform: translate(-50%, -50%);">
-            <div appClickStopPropagation id="auth-form-container" class="flex flex-col bg-white">
+        <div id="form-wrapper" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+            <div appClickStopPropagation id="auth-form-container" class="p-5 w-90 lg:w-120 flex flex-col items-center gap-y-5 bg-white">
                 <div id="title">
-                    <p class="text-5xl">Sign In</p>
+                    <p class="text-5xl">Sign Up</p>
                 </div>
-                <div id="form">
+                <div id="form" class="self-start px-5 w-full">
+                    <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-1">
+                        <div class="flex flex-col">
+                            <label id="username-label" for="username" class="text-md font-medium text-black-700">Username</label>
+                            <input id="username-input" name="username" type="text" formControlName="username" 
+                            class="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>
+                        </div>
 
+                        <div class="flex flex-col">
+                            <label id="email-label" for="email" class="text-md font-medium text-black-700">Email address</label>
+                            <input id="email-input" name="email" type="text" formControlName="email"
+                            class="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label id="password-label" for="password" class="text-md font-medium text-black-700">Password</label>
+                            <input id="password-input" name="password" type="text" formControlName="password"
+                            class="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label id="confirm-password-label" for="confirm-password" class="text-md font-medium text-black-700">Confirm password</label>
+                            <input id="confirm-password-input" name="confirm-password" type="text" formControlName="confirmPassword"
+                            class="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>
+                        </div>
+
+                        <div class="mt-4">
+                            <input type="submit" class="btn" value="Submit" [disabled]="!authForm.valid"/>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
