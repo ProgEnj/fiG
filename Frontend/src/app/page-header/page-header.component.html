@@ -1,0 +1,19 @@
+<div id="header" class="flex bg-cyan-500 justify-between p-2">
+    <div id="logo" class="flex">
+    <p class="text-5xl">fiG</p>
+    </div>
+    <div id="buttons" class="flex gap-2">
+    <div id="upload" class="h-full">
+        <button type="button" class="h-full btn"><span>Upload</span></button>
+    </div>
+    <div id="signin" class="h-full">
+        <button type="button" class="h-full btn" (click)="login.loginFormToggle()"><span>Sign in</span></button>
+    </div>
+    <div id="signup" class="h-full">
+        <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign up</span></button>
+    </div>
+    </div>
+</div>
+
+<app-authentication-form #auth></app-authentication-form>
+<app-login-form #auth></app-login-form>

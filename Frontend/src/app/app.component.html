@@ -1,19 +1,7 @@
 <div class="flex h-full flex-row justify-center">
   <div class="flex flex-col w-full md:w-[70%]">
 
-    <div id="header" class="flex bg-cyan-500 justify-between p-2">
-      <div id="logo" class="flex">
-        <p class="text-5xl">fiG</p>
-      </div>
-      <div id="buttons" class="flex gap-2">
-        <div id="upload" class="h-full">
-          <button type="button" class="h-full btn"><span>Upload</span></button>
-        </div>
-        <div id="signin" class="h-full">
-          <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign in</span></button>
-        </div>
-      </div>
-    </div>
+    <app-page-header></app-page-header>
 
     <div id="search" class="pt-2 pb-2">
         <form class="w-full flex" role="search" aria-label="Site search">
@@ -37,70 +25,11 @@
         </form>
     </div>
 
-    <div id="main-content" class="flex-grow bg-pink-500">
+    <app-main-page></app-main-page>
 
-      <div id="gifs-desktop" class="w-full hidden md:flex gap-5 ">
-        <div id="col1" class="flex flex-col gap-5">
-          <div class=""><img src="/devgifs/1.gif" alt="dis" class="w-full"/></div>
-                                                                   
-          <div class=""><img src="/devgifs/2.gif" alt="dis" class="w-full"/></div>
-        </div>                                                       
-                                                                   
-        <div id="col2" class="flex flex-col gap-5">                  
-          <div class=""><img src="/devgifs/5.gif" alt="dis" class="w-full"/></div>
-                                                                   
-          <div class=""><img src="/devgifs/6.gif" alt="dis" class="w-full"/></div>
-        </div>                                                       
-                                                                   
-        <div id="col3" class="flex flex-col gap-5">                  
-          <div class=""><img src="/devgifs/7.gif" alt="dis" class="w-full"/></div>
-                                                                   
-          <div class=""><img src="/devgifs/8.gif" alt="dis" class="w-full"/></div>
-        </div>                                                       
-                                                                   
-        <div id="col4>" class="flex flex-col gap-5">                 
-          <div class=""><img src="/devgifs/9.gif" alt="dis" class="w-full"/></div>
-                                                                   
-          <div class=""><img src="/devgifs/0.gif" alt="dis" class="w-full"/></div>
-                                                                   
-          <div class=""><img src="/devgifs/3.gif" alt="dis" class="w-full"/></div>
-        </div>
-      </div>
-
-      <div id="gifs-mobile" class="w-full flex-nowrap flex md:hidden gap-5">
-        <div id="col1mob" class="flex flex-col gap-5 w-1/2">
-          <div class=""><img src="/devgifs/1.gif" alt="dis" class="w-full"/></div>
-                                                                      
-          <div class=""><img src="/devgifs/2.gif" alt="dis" class="w-full"/></div>
-
-          <div class=""><img src="/devgifs/7.gif" alt="dis" class="w-full"/></div>
-                                                                      
-          <div class=""><img src="/devgifs/8.gif" alt="dis" class="w-full"/></div>
-        </div>                                                        
-                                                                      
-        <div id="col2mob" class="flex flex-col gap-5 w-1/2">                
-          <div class=""><img src="/devgifs/5.gif" alt="dis" class="w-full"/></div>
-                                                                      
-          <div class=""><img src="/devgifs/6.gif" alt="dis" class="w-full"/></div>
-
-          <div class=""><img src="/devgifs/9.gif" alt="dis" class="w-full"/></div>
-                                                                      
-          <div class=""><img src="/devgifs/0.gif" alt="dis" class="w-full"/></div>
-                                                                      
-          <div class=""><img src="/devgifs/3.gif" alt="dis" class="w-full"/></div>
-        </div>                                                                  
-      </div>
-
-    </div>
-
-    <div id="footer" class="bg-red-500 text-sm">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse rhoncus pellentesque odio ac blandit. Nam congue metus ac eleifend efficitur. Nullam eget nunc pellentesque, sagittis nisl quis, pretium odio. Phasellus laoreet orci in elit laoreet, sit amet sagittis lacus commodo. Donec at luctus augue. Morbi semper, elit at eleifend porta, sem lorem aliquet orci, nec lobortis sem lorem id ex. Maecenas ullamcorper id metus at mollis. Curabitur egestas, ligula id imperdiet dapibus, felis nibh finibus nisi, id auctor ex enim eget ligula. Suspendisse libero lorem, venenatis et condimentum sit amet, porttitor ac eros. In varius mauris id ligula accumsan fermentum. Nulla accumsan at nulla sed sagittis. Vestibulum bibendum consequat eros nec pharetra.
-      Donec tempor ullamcorper nulla at fermentum.
-    </div>
+    <app-page-footer></app-page-footer>
 
   </div>
 </div>
-
-<app-authentication-form #auth></app-authentication-form>
 
 <router-outlet />

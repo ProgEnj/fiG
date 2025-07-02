@@ -12,7 +12,7 @@ export class AuthenticationFormComponent {
 
   private formBuilder = inject(FormBuilder);
 
-  isAuthFormShown: Boolean = true;
+  isAuthFormShown: Boolean = false;
 
   authForm = this.formBuilder.group({
     username: ['', Validators.required],
