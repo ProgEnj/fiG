@@ -1,35 +1,8 @@
 <div class="flex h-full flex-row justify-center">
-  <div class="flex flex-col w-full md:w-[70%]">
-
+  <div class="flex h-full flex-col w-full md:w-[70%]">
     <app-page-header></app-page-header>
-
-    <div id="search" class="pt-2 pb-2">
-        <form class="w-full flex" role="search" aria-label="Site search">
-
-          <label for="search-input" class="sr-only">Search</label>
-
-          <input
-            id="search-input"
-            type="text"
-            placeholder="Search…"
-            class="flex-grow px-4 py-2 rounded-l-md border border-gray-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none"
-          />
-
-          <button
-            type="submit"
-            class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2 rounded-r-md font-semibold transition-all duration-200 ease-in-out flex items-center gap-1"
-          >
-            <!-- Normal search icon -->
-            <span>Search</span>
-          </button>
-        </form>
-    </div>
-
-    <app-main-page></app-main-page>
-
+    <router-outlet/>
     <app-page-footer></app-page-footer>
-
   </div>
 </div>
 
-<router-outlet />
