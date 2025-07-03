@@ -1,8 +1,9 @@
 <div class="flex h-full flex-row justify-center">
   <div class="flex h-full flex-col w-full md:w-[70%]">
     <app-page-header></app-page-header>
-    <router-outlet/>
-    <app-page-footer></app-page-footer>
+      <div id="main-content" class="flex-grow">
+        <router-outlet/>
+      </div>
   </div>
 </div>
 

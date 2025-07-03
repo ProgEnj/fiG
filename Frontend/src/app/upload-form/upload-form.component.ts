@@ -10,13 +10,14 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 export class UploadFormComponent {
   private formBuilder = inject(FormBuilder);
 
+  previewSrc = '#';
+
   isAuthFormShown: Boolean = false;
 
   uploadForm = this.formBuilder.group({
-    username: ['', Validators.required],
-    email: ['', Validators.compose([Validators.required, Validators.email])],
-    password: ['', Validators.required],
-    confirmPassword: ['', Validators.required],
+    name: ['', Validators.required],
+    file: ['', Validators.required],
+    tags: ['', Validators.required],
   });
 
   authFormToggle() {
@@ -32,6 +33,14 @@ export class UploadFormComponent {
   }
 
   onSubmit() {
+  }
 
+  UpdatePreview(file: File) {
+    this.previewSrc = URL.createObjectURL(file);
+  }
+
+  onImagePicked(event: Event) {
+    const file = (event.target as HTMLInputElement).files![0];
+    this.UpdatePreview(file);
   }
 }
