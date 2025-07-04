@@ -12,11 +12,13 @@ export class UploadFormComponent {
 
   previewSrc = '#';
 
+  uploadedFile?: File = undefined;
+
   isAuthFormShown: Boolean = false;
 
   uploadForm = this.formBuilder.group({
     name: ['', Validators.required],
-    file: ['', Validators.required],
+    file: [File.prototype , Validators.required],
     tags: ['', Validators.required],
   });
 
@@ -33,14 +35,22 @@ export class UploadFormComponent {
   }
 
   onSubmit() {
+    let uploadFormData = this.uploadForm.value;
+    let formData = new FormData();
+    let tags = uploadFormData.tags!.split(' ');
+
+    formData.append("File", this.uploadedFile!);
+    formData.append("Name", uploadFormData.name!);
+    formData.append("Tags", JSON.stringify(tags));
   }
 
   UpdatePreview(file: File) {
+    this.uploadedFile = file;
     this.previewSrc = URL.createObjectURL(file);
   }
 
   onImagePicked(event: Event) {
-    const file = (event.target as HTMLInputElement).files![0];
-    this.UpdatePreview(file);
+    const uploadedFile = (event.target as HTMLInputElement).files![0];
+    this.UpdatePreview(uploadedFile);
   }
 }

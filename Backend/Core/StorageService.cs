@@ -38,6 +38,7 @@ public class StorageService : IStorageService
         return Result.Success(gifs);
     }
     
+    // TODO: Refactor this, the name should be picked up from db by refresh token, we can't trust frontend
     public async Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO)
     {
         var check = MetadataExtract.IsGIF(storageItemDTO.File);
