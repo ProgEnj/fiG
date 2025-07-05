@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ClickStopPropagationDirective } from '../click-stop-propagation.directive';
+import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 
 @Component({
   selector: 'app-login-form',

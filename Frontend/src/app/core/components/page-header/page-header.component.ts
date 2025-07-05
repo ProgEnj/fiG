@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { AuthenticationFormComponent } from '../authentication-form/authentication-form.component';
-import { LoginFormComponent } from '../login-form/login-form.component';
+import { AuthenticationFormComponent } from '../../../features/authentication-form/authentication-form.component';
+import { LoginFormComponent } from '../../../features/login-form/login-form.component';
 import { RouterLink } from '@angular/router';
 
 @Component({
