@@ -40,6 +40,8 @@ public class AuthService : IAuthService
 
     public async Task<Result> RegisterAsync(UserRegisterRequestDTO request)
     {
+        Console.WriteLine("This Shit:" + await _userManager.FindByEmailAsync(request.Email));
+        
         if (await _userManager.FindByEmailAsync(request.Email) != null)
         {
             return Result.Failure(AuthenticationErrors.UserAlreadyExist);
@@ -52,7 +54,7 @@ public class AuthService : IAuthService
         var newUser = new ApplicationUser(){ UserName = request.UserName, Email = request.Email};
         
         var result = await _userManager.CreateAsync(newUser, request.Password);
-        if (result == IdentityResult.Failed())
+        if (!result.Succeeded)
         {
             return Result.Failure(AuthenticationErrors.Identity);
         }

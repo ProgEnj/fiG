@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { AuthenticationService } from '../../core/services/authentication.service';
 
 @Component({
   selector: 'app-authentication-form',
@@ -10,11 +11,13 @@ import { ClickStopPropagationDirective } from '../../shared/directives/click-sto
 })
 export class AuthenticationFormComponent {
 
-  private formBuilder = inject(FormBuilder);
+  private _formBuilder = inject(FormBuilder);
+
+  private _authenticationService = inject(AuthenticationService);
 
   isAuthFormShown: Boolean = false;
 
-  authForm = this.formBuilder.group({
+  authForm = this._formBuilder.group({
     username: ['', Validators.required],
     email: ['', Validators.compose([Validators.required, Validators.email])],
     password: ['', Validators.required],
@@ -37,6 +40,11 @@ export class AuthenticationFormComponent {
   }
 
   onSubmit() {
+    let formValue = this.authForm.value;
+    this._authenticationService.Register(
+      { Email: formValue.email!, Username: formValue.username!, Password: formValue.password! })
+      .subscribe(res => { console.log(res); });
+
   }
 
   confirmPasswordValidator(passwordControl: string, confirmPasswordControlName: string): ValidatorFn {

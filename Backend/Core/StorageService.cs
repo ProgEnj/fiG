@@ -58,7 +58,7 @@ public class StorageService : IStorageService
         
         // Check if tags already exist
         List<Tag> tags = new List<Tag>();
-        foreach (var tagName in storageItemDTO.tags)
+        foreach (var tagName in storageItemDTO.serializedTags)
         {
             var foundTag = _context.Tags.FirstOrDefault(x => x.Name == tagName);
             if (foundTag == null)
