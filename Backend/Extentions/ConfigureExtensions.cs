@@ -50,6 +50,11 @@ public static class ConfigureExtension
                 o.Cookie.SameSite = SameSiteMode.Strict;
                 o.Cookie.Path = "auth/refreshaccess";
                 o.ExpireTimeSpan = TimeSpan.FromDays(30);
+                o.Events.OnRedirectToLogin = (context) =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
             });
     }
     

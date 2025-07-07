@@ -19,9 +19,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "MyOptions", policy =>
+    options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "*", "*").AllowAnyHeader().AllowAnyMethod();
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -31,8 +34,8 @@ builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IEmailSender<ApplicationUser>, EmailSenderDummy>();
 
 // Migrations on startup:
-// var context = builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>();
-// await context.Database.MigrateAsync();
+var context = builder.Services.BuildServiceProvider().GetService<ApplicationDbContext>();
+await context.Database.MigrateAsync();
 
 var app = builder.Build();
 
@@ -45,7 +48,7 @@ if (app.Environment.IsEnvironment("Development") || app.Environment.IsEnvironmen
 app.UseHttpsRedirection();
 if (app.Environment.IsEnvironment("DevelopmentLocal"))
 {
-    app.UseCors("MyOptions");
+    app.UseCors();
 }
 app.UseAuthentication();
 app.UseAuthorization();

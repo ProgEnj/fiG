@@ -1,5 +1,4 @@
 <div id="search" class="pt-2 pb-2">
-    <form class="w-full flex" role="search" aria-label="Site search">
 
         <label for="search-input" class="sr-only">Search</label>
 
@@ -11,11 +10,10 @@
         />
 
         <button
-        type="submit"
+        (click)="SomeFunc()"
         class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-4 py-2 rounded-r-md font-semibold transition-all duration-200 ease-in-out flex items-center gap-1"
         >
         <!-- Normal search icon -->
         <span>Search</span>
         </button>
-    </form>
 </div>

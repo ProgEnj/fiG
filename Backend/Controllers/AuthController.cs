@@ -52,7 +52,8 @@ namespace Backend.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-        [Authorize(AuthenticationSchemes = "refreshTokenCookie", Policy = "RefreshTokenPolicy")]
+        [Authorize(Policy = "RefreshTokenPolicy")]
+        [Authorize(AuthenticationSchemes = "refreshTokenCookie")]
         public async Task<IActionResult> LogoutUser()
         {
             var result = await _authService.LogoutUserAsync();
@@ -116,7 +117,8 @@ namespace Backend.Controllers
         [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [Authorize(AuthenticationSchemes = "refreshTokenCookie", Policy = "RefreshTokenPolicy")]
+        [Authorize(Policy = "RefreshTokenPolicy")]
+        [Authorize(AuthenticationSchemes = "refreshTokenCookie")]
         public async Task<IActionResult> RefreshAccess()
         {
             var result = await _authService.RefreshAccessTokenAsync();

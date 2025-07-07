@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
+import { AuthenticationService } from '../../core/services/authentication.service';
 
 @Component({
   selector: 'app-login-form',
@@ -11,11 +12,11 @@ import { ClickStopPropagationDirective } from '../../shared/directives/click-sto
 export class LoginFormComponent {
 
   private formBuilder = inject(FormBuilder);
+  private _authenticationService = inject(AuthenticationService);
 
   isLoginFormShown: Boolean = false;
 
   loginForm = this.formBuilder.group({
-    username: ['', Validators.required],
     email: ['', Validators.compose([Validators.required, Validators.email])],
     password: ['', Validators.required],
   });
@@ -33,6 +34,10 @@ export class LoginFormComponent {
   }
 
   onSubmit() {
+    let formValue = this.loginForm.value;
+    this._authenticationService.LogIn(
+      { Email: formValue.email!, Password: formValue.password! })
+      .subscribe(res => { console.log(res); });
   }
 
 }

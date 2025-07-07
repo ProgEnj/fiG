@@ -8,12 +8,6 @@
                 <div id="form" class="self-start px-5 w-full">
                     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-y-1">
                         <div class="flex flex-col">
-                            <label id="username-label" for="username" class="text-md font-medium text-black-700">Username</label>
-                            <input id="username-input" name="username" type="text" formControlName="username" 
-                            class="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>
-                        </div>
-
-                        <div class="flex flex-col">
                             <label id="email-label" for="email" class="text-md font-medium text-black-700">Email address</label>
                             <input id="email-input" name="email" type="text" formControlName="email"
                             class="mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"/>

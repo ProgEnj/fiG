@@ -44,7 +44,6 @@ export class AuthenticationFormComponent {
     this._authenticationService.Register(
       { Email: formValue.email!, Username: formValue.username!, Password: formValue.password! })
       .subscribe(res => { console.log(res); });
-
   }
 
   confirmPasswordValidator(passwordControl: string, confirmPasswordControlName: string): ValidatorFn {

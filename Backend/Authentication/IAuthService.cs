@@ -12,6 +12,6 @@ public interface IAuthService
     Task<Result> SendConfirmationEmailAsync(ApplicationUser user);
     Task<Result> ForgotPasswordEmailAsync(ForgotPasswordRequestDTO request);
     Task<Result> ResetPasswordAsync(ResetPasswordRequestDTO request);
-    Task<Result<string>> RefreshAccessTokenAsync();
+    Task<Result<UserLoginResponseDTO>> RefreshAccessTokenAsync();
     Task<Result> LogoutUserAsync();
 }

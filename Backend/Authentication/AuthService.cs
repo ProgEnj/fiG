@@ -40,8 +40,6 @@ public class AuthService : IAuthService
 
     public async Task<Result> RegisterAsync(UserRegisterRequestDTO request)
     {
-        Console.WriteLine("This Shit:" + await _userManager.FindByEmailAsync(request.Email));
-        
         if (await _userManager.FindByEmailAsync(request.Email) != null)
         {
             return Result.Failure(AuthenticationErrors.UserAlreadyExist);
@@ -87,7 +85,7 @@ public class AuthService : IAuthService
         await _httpContextAccessor.HttpContext.SignInAsync(
             "refreshTokenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "refreshToken")));
 
-        var result = new UserLoginResponseDTO(user.UserName, user.Email, token, refreshToken);
+        var result = new UserLoginResponseDTO(token);
         return Result<UserLoginResponseDTO>.Success(result);
     }
 
@@ -187,24 +185,24 @@ public class AuthService : IAuthService
         return Result.Success();
     }
 
-    public async Task<Result<string>> RefreshAccessTokenAsync()
+    public async Task<Result<UserLoginResponseDTO>> RefreshAccessTokenAsync()
     {
         string? refreshToken = _httpContextAccessor.HttpContext.User.FindFirstValue("refreshToken");
         if(refreshToken == null)
         {
-            return Result.Failure<string>(AuthenticationErrors.WrongToken);
+            return Result.Failure<UserLoginResponseDTO>(AuthenticationErrors.WrongToken);
         }
         
         var user = await _userManager.Users.FirstAsync(u => u.RefreshToken == refreshToken);
         if (user == null)
         {
-            return Result.Failure<string>(AuthenticationErrors.UserNotFound);
+            return Result.Failure<UserLoginResponseDTO>(AuthenticationErrors.UserNotFound);
         }
 
-        var newRefreshToken = _tokenService.GenerateRefreshToken();
-        user.RefreshToken = newRefreshToken;
+        // var newRefreshToken = _tokenService.GenerateRefreshToken();
+        // user.RefreshToken = newRefreshToken;
 
         var newToken = await _tokenService.GenerateAccessTokenAsync(user);
-        return Result.Success(newToken);
+        return Result.Success(new UserLoginResponseDTO(newToken));
     }
 }
