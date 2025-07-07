@@ -20,8 +20,8 @@ export class AuthenticationFormComponent {
   authForm = this._formBuilder.group({
     username: ['', Validators.required],
     email: ['', Validators.compose([Validators.required, Validators.email])],
-    password: ['', Validators.required],
-    confirmPassword: ['', Validators.required],
+    password: ['', Validators.compose([Validators.required, Validators.pattern(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/))])],
+    confirmPassword: ['', Validators.compose([Validators.required, Validators.pattern(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/))])],
   },
   {
     validators: this.confirmPasswordValidator('password', 'confirmPassword')

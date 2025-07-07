@@ -13,5 +13,4 @@ export class AuthenticationService {
   Register(dto: UserRegisterRequest): Observable<any> {
     return this.http.post(host + '/auth/register', dto);
   }
-
 }
