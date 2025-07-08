@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './header-profile-display.component.scss'
 })
 export class HeaderProfileDisplayComponent {
+  profileName: string = "Placeholder";
 
 }

@@ -3,17 +3,23 @@
     <a href="/" class="text-5xl">fiG</a>
     </div>
     <div id="buttons" class="flex gap-2">
-    <div id="upload" class="h-full">
-        <button [routerLink]="['/upload']" type="button" class="h-full btn"><span>Upload</span></button>
-    </div>
-    <div id="signin" class="h-full">
-        <button type="button" class="h-full btn" (click)="login.loginFormToggle()"><span>Sign in</span></button>
-    </div>
-    <div id="signup" class="h-full">
-        <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign up</span></button>
-    </div>
+        <div id="upload" class="h-full">
+            <button [routerLink]="['/upload']" type="button" class="h-full btn"><span>Upload</span></button>
+        </div>
+        @if (!this.isLoggedIn) {
+            <div id="signin" class="h-full">
+                <button type="button" class="h-full btn" (click)="login.loginFormToggle()"><span>Sign in</span></button>
+            </div>
+            <div id="signup" class="h-full">
+                <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign up</span></button>
+            </div>
+        } @else {
+            <div id="profile-display" class="h-full">
+                <app-header-profile-display #profile></app-header-profile-display>
+            </div>
+        }
     </div>
 </div>
 
 <app-authentication-form #auth></app-authentication-form>
-<app-login-form #auth></app-login-form>
+<app-login-form #login></app-login-form>

@@ -16,7 +16,7 @@ export class AuthenticationService {
   }
 
   LogIn(dto: UserLoginRequest): Observable<any> {
-    return this.http.post(host + '/auth/login', dto, {withCredentials: true});
+    return this.http.post(host + '/auth/login', dto, { withCredentials: true });
   }
 
 }
