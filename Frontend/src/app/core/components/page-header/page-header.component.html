@@ -1,21 +1,21 @@
 <div id="header" class="flex bg-cyan-500 justify-between p-2">
     <div id="logo" class="flex">
-    <a href="/" class="text-5xl">fiG</a>
+    <a [routerLink]="['/']" class="text-5xl">fiG</a>
     </div>
     <div id="buttons" class="flex gap-2">
         <div id="upload" class="h-full">
             <button [routerLink]="['/upload']" type="button" class="h-full btn"><span>Upload</span></button>
         </div>
-        @if (!this.isLoggedIn) {
+        @if (this._authService.IsLoggedIn()) {
+            <div id="profile-display" class="h-full">
+                <app-header-profile-display #profile></app-header-profile-display>
+            </div>
+        } @else {
             <div id="signin" class="h-full">
                 <button type="button" class="h-full btn" (click)="login.loginFormToggle()"><span>Sign in</span></button>
             </div>
             <div id="signup" class="h-full">
                 <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign up</span></button>
-            </div>
-        } @else {
-            <div id="profile-display" class="h-full">
-                <app-header-profile-display #profile></app-header-profile-display>
             </div>
         }
     </div>

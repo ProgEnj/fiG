@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { AuthenticationService } from '../../core/services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-authentication-form',
@@ -12,8 +13,8 @@ import { AuthenticationService } from '../../core/services/authentication.servic
 export class AuthenticationFormComponent {
 
   private _formBuilder = inject(FormBuilder);
-
   private _authenticationService = inject(AuthenticationService);
+  private _router = inject(Router);
 
   isAuthFormShown: Boolean = false;
 
@@ -43,7 +44,11 @@ export class AuthenticationFormComponent {
     let formValue = this.authForm.value;
     this._authenticationService.Register(
       { Email: formValue.email!, Username: formValue.username!, Password: formValue.password! })
-      .subscribe(res => { console.log(res); });
+      .subscribe(res => {
+        localStorage.setItem("username", formValue.username!);
+        this.authFormToggle();
+        this._router.navigate(['/refresh']).then(() => this._router.navigate(['/']));
+      });
   }
 
   confirmPasswordValidator(passwordControl: string, confirmPasswordControlName: string): ValidatorFn {

@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
 import { AuthenticationFormComponent } from '../../../features/authentication-form/authentication-form.component';
 import { LoginFormComponent } from '../../../features/login-form/login-form.component';
 import { RouterLink } from '@angular/router';
 import { HeaderProfileDisplayComponent } from '../header-profile-display/header-profile-display.component';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-page-header',
@@ -11,6 +12,8 @@ import { HeaderProfileDisplayComponent } from '../header-profile-display/header-
   styleUrl: './page-header.component.scss'
 })
 export class PageHeaderComponent implements AfterViewInit {
+
+  public _authService = inject(AuthenticationService);
 
   @ViewChild(HeaderProfileDisplayComponent) 
   profile!: HeaderProfileDisplayComponent;
@@ -21,10 +24,7 @@ export class PageHeaderComponent implements AfterViewInit {
   @ViewChild(LoginFormComponent) 
   login!: LoginFormComponent;
 
-  isLoggedIn: boolean = true;
-
   ngAfterViewInit() {
-
   }
 
 }

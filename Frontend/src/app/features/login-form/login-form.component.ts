@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { AuthenticationService } from '../../core/services/authentication.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
@@ -9,17 +10,22 @@ import { AuthenticationService } from '../../core/services/authentication.servic
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss'
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnInit {
 
-  private formBuilder = inject(FormBuilder);
-  private _authenticationService = inject(AuthenticationService);
+  private _formBuilder = inject(FormBuilder);
+  private _authService = inject(AuthenticationService);
+  private _router = inject(Router);
 
   isLoginFormShown: Boolean = false;
 
-  loginForm = this.formBuilder.group({
+  loginForm = this._formBuilder.group({
     email: ['', Validators.compose([Validators.required, Validators.email])],
     password: ['', Validators.required],
   });
+
+  ngOnInit(): void {
+    console.log(this._authService.IsLoggedIn());
+  }
 
   loginFormToggle() {
     const bodyElement = document.body;
@@ -35,9 +41,13 @@ export class LoginFormComponent {
 
   onSubmit() {
     let formValue = this.loginForm.value;
-    this._authenticationService.LogIn(
+    this._authService.LogIn(
       { Email: formValue.email!, Password: formValue.password! })
-      .subscribe(res => { console.log(res); });
+      .subscribe(res => { 
+        this.loginFormToggle();
+        this._authService.SetToken(res.token);
+        this._router.navigate(['/refresh']).then(() => this._router.navigate(['/']));
+      });
   }
 
 }

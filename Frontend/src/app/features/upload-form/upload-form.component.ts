@@ -18,21 +18,11 @@ export class UploadFormComponent {
 
   uploadForm = this.formBuilder.group({
     name: ['', Validators.required],
+    // File.prototype gives Error DOMException, 
+    // but it's the only way it works
     file: [File.prototype , Validators.required],
     tags: ['', Validators.required],
   });
-
-  authFormToggle() {
-    const bodyElement = document.body;
-    if(this.isAuthFormShown) {
-      bodyElement.classList.remove('no-scroll');
-      this.isAuthFormShown = false;
-    }
-    else {
-      bodyElement.classList.add('no-scroll')
-      this.isAuthFormShown = true;
-    }
-  }
 
   onSubmit() {
     let uploadFormData = this.uploadForm.value;
