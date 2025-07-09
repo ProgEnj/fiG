@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { host } from '../../app.config';
+import { environment } from '../../../environments/environment';
 import { firstValueFrom, Observable } from 'rxjs';
 import { UserRegisterRequest } from '../model/user-register-request.dto';
 import { UserLoginRequest } from '../model/user-login-request.dto';
@@ -22,7 +22,7 @@ export class AuthenticationService {
 
   async RefreshToken(): Promise<boolean> {
       const res = await firstValueFrom(this.http.get<UserLoginResponse>(
-        host + '/auth/refreshaccess', 
+        environment.host + '/auth/refreshaccess', 
         { observe: 'response', withCredentials: true }
       ));
 
@@ -45,11 +45,11 @@ export class AuthenticationService {
   }
 
   Register(dto: UserRegisterRequest): Observable<any> {
-    return this.http.post(host + '/auth/register', dto);
+    return this.http.post(environment.host + '/auth/register', dto);
   }
 
   LogIn(dto: UserLoginRequest): Observable<UserLoginResponse> {
-    return this.http.post<UserLoginResponse>( host + '/auth/login', dto, { withCredentials: true } );
+    return this.http.post<UserLoginResponse>(environment.host + '/auth/login', dto, { withCredentials: true });
   }
 
 }

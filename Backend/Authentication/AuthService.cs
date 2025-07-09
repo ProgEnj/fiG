@@ -85,7 +85,7 @@ public class AuthService : IAuthService
         await _httpContextAccessor.HttpContext.SignInAsync(
             "refreshTokenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "refreshToken")));
 
-        var result = new UserLoginResponseDTO(token);
+        var result = new UserLoginResponseDTO(token, user.UserName);
         return Result<UserLoginResponseDTO>.Success(result);
     }
 
@@ -185,24 +185,24 @@ public class AuthService : IAuthService
         return Result.Success();
     }
 
-    public async Task<Result<UserLoginResponseDTO>> RefreshAccessTokenAsync()
+    public async Task<Result<RefreshAccessTokenResponseDTO>> RefreshAccessTokenAsync()
     {
         string? refreshToken = _httpContextAccessor.HttpContext.User.FindFirstValue("refreshToken");
         if(refreshToken == null)
         {
-            return Result.Failure<UserLoginResponseDTO>(AuthenticationErrors.WrongToken);
+            return Result.Failure<RefreshAccessTokenResponseDTO>(AuthenticationErrors.WrongToken);
         }
         
         var user = await _userManager.Users.FirstAsync(u => u.RefreshToken == refreshToken);
         if (user == null)
         {
-            return Result.Failure<UserLoginResponseDTO>(AuthenticationErrors.UserNotFound);
+            return Result.Failure<RefreshAccessTokenResponseDTO>(AuthenticationErrors.UserNotFound);
         }
 
         // var newRefreshToken = _tokenService.GenerateRefreshToken();
         // user.RefreshToken = newRefreshToken;
 
         var newToken = await _tokenService.GenerateAccessTokenAsync(user);
-        return Result.Success(new UserLoginResponseDTO(newToken));
+        return Result.Success(new RefreshAccessTokenResponseDTO(newToken));
     }
 }

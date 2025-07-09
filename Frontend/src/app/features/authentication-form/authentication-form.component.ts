@@ -45,7 +45,6 @@ export class AuthenticationFormComponent {
     this._authenticationService.Register(
       { Email: formValue.email!, Username: formValue.username!, Password: formValue.password! })
       .subscribe(res => {
-        localStorage.setItem("username", formValue.username!);
         this.authFormToggle();
         this._router.navigate(['/refresh']).then(() => this._router.navigate(['/']));
       });
