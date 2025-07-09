@@ -1,14 +1,14 @@
-FROM node:slim
+FROM node:slim as build
 
 WORKDIR /usr/src/app
 
-COPY package.json /usr/src/app
-COPY package-lock.json /usr/src/app
+COPY package.json package-lock.json ./ 
 
-RUN npm install -g @angular/cli
 RUN npm install
+COPY . . 
+RUN npm run build
 
-COPY . /usr/src/app
-COPY ./src /usr/src/app/
+FROM nginx as run
 
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /usr/src/app/dist/frontend /usr/share/nginx/html
