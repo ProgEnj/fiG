@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { LogoutComponent } from "../logout/logout.component";
 
 @Component({
   selector: 'app-header-profile-display',
-  imports: [],
+  imports: [LogoutComponent],
   templateUrl: './header-profile-display.component.html',
   styleUrl: './header-profile-display.component.scss'
 })

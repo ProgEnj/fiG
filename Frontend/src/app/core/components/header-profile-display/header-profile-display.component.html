@@ -1,4 +1,9 @@
-<div id="profile-diplay" class="flex gap-1.5 items-center h-full pr-3 pl-2 btn">
-    <img src="/Profile_avatar_placeholder.png" id="avatar-placeholder" class="w-10 rounded-full">
-    <p id="profile-name" class="text-white">Welcome, {{this.profileName}}</p>
+<div class="flex">
+    <div id="profile-diplay" class="flex gap-1.5 items-center h-full pl-2 btn" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
+        <img src="/Profile_avatar_placeholder.png" id="avatar-placeholder" class="w-10 rounded-full">
+        <p id="profile-name" class="text-white">Welcome, {{this.profileName}}</p>
+    </div>
+    <div class="btn" style="border-left: 1px solid; border-left-color: white; padding-left: 5px; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+        <app-logout></app-logout>
+    </div>
 </div>

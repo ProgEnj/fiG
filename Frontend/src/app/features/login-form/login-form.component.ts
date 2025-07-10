@@ -46,7 +46,7 @@ export class LoginFormComponent implements OnInit {
       .subscribe(res => { 
         this.loginFormToggle();
         this._authService.SetToken(res.token);
-        localStorage.setItem("username", res.username);
+        this._authService.SetUsername(res.username);
         this._router.navigate(['/refresh']).then(() => this._router.navigate(['/']));
       });
   }

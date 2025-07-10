@@ -7,7 +7,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-page-header',
-  imports: [ AuthenticationFormComponent, LoginFormComponent, RouterLink, HeaderProfileDisplayComponent ],
+  imports: [AuthenticationFormComponent, LoginFormComponent, RouterLink, HeaderProfileDisplayComponent],
   templateUrl: './page-header.component.html',
   styleUrl: './page-header.component.scss'
 })

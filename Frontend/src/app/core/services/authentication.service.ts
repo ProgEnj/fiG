@@ -12,12 +12,27 @@ import { UserLoginResponse } from '../model/user-login-response.dto';
 export class AuthenticationService {
   private http: HttpClient = inject(HttpClient);
 
+  private cred = {username: 'username', jwtToken: 'token'};
+
   GetToken(): string | null {
-    return localStorage.getItem("token");
+    return localStorage.getItem(this.cred.jwtToken);
   }
 
   SetToken(token: string): void {
-    localStorage.setItem("token", token);
+    localStorage.setItem(this.cred.jwtToken, token);
+  }
+
+  GetUsername(): string | null {
+    return localStorage.getItem(this.cred.username);
+  }
+
+  SetUsername(username: string): void {
+    localStorage.setItem(this.cred.username, username);
+  }
+
+  ClearLoginInfo() {
+    localStorage.removeItem(this.cred.jwtToken);
+    localStorage.removeItem(this.cred.username)
   }
 
   async RefreshToken(): Promise<boolean> {
@@ -36,7 +51,7 @@ export class AuthenticationService {
   }
 
   IsLoggedIn(): boolean {
-    if(localStorage.getItem("token") != null) {
+    if(localStorage.getItem(this.cred.jwtToken) != null) {
       return true;
     }
     else {
@@ -45,11 +60,15 @@ export class AuthenticationService {
   }
 
   Register(dto: UserRegisterRequest): Observable<any> {
-    return this.http.post(environment.host + '/auth/register', dto);
+    return this.http.post(environment.host + '/auth/register', dto, { observe: 'response' });
   }
 
   LogIn(dto: UserLoginRequest): Observable<UserLoginResponse> {
     return this.http.post<UserLoginResponse>(environment.host + '/auth/login', dto, { withCredentials: true });
+  }
+
+  LogOut(): Observable<any> {
+    return this.http.post(environment.host + '/auth/logout', null, { withCredentials: true, observe: 'response' });
   }
 
 }
