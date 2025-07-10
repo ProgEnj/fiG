@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FileService } from '../../core/services/file.service';
 
 @Component({
   selector: 'app-upload-form',
@@ -8,7 +9,8 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
   styleUrl: './upload-form.component.scss'
 })
 export class UploadFormComponent {
-  private formBuilder = inject(FormBuilder);
+  private _formBuilder = inject(FormBuilder);
+  private _fileService = inject(FileService);
 
   previewSrc = '#';
 
@@ -16,11 +18,11 @@ export class UploadFormComponent {
 
   isAuthFormShown: Boolean = false;
 
-  uploadForm = this.formBuilder.group({
+  uploadForm = this._formBuilder.group({
     name: ['', Validators.required],
     // File.prototype gives Error DOMException, 
     // but it's the only way it works
-    file: [File.prototype , Validators.required],
+    file: ['', Validators.required],
     tags: ['', Validators.required],
   });
 
@@ -32,6 +34,10 @@ export class UploadFormComponent {
     formData.append("File", this.uploadedFile!);
     formData.append("Name", uploadFormData.name!);
     formData.append("Tags", JSON.stringify(tags));
+
+    this._fileService.UploadGif(formData).subscribe(res => {
+      console.log(res.status);
+    });
   }
 
   UpdatePreview(file: File) {

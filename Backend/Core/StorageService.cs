@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using System.Security.Cryptography;
 using Backend.DTOs;
 using Backend.ErrorHandling;
 using Backend.Identity;
 using Backend.Model;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +14,15 @@ public class StorageService : IStorageService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     public static string PATH = "";
 
-    public StorageService(UserManager<ApplicationUser> userManager, IConfiguration configuration, ApplicationDbContext context)
+    public StorageService(UserManager<ApplicationUser> userManager, IConfiguration configuration, ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         PATH = configuration.GetSection("CoreSettings").GetValue<string>("PATH");
         _context = context;
+        _httpContextAccessor = httpContextAccessor;
     }
     
     /*
@@ -32,19 +36,20 @@ public class StorageService : IStorageService
     public async Task<Result<List<MainPageGifDTO>>> RetrieveGIFAsync()
     {
         var gifs = await _context.StorageItems.Take(10).Select(x =>
-            // TODO: Decide if its better to do on frontend (separator replace)
             new MainPageGifDTO(x.Name, x.Path.Replace("\\", "/"), x.Hash.Substring(0, 10), x.Tags)).ToListAsync();
         
         return Result.Success(gifs);
     }
     
-    // TODO: Refactor this, the name should be picked up from db by refresh token, we can't trust frontend
     public async Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO)
     {
         var check = MetadataExtract.IsGIF(storageItemDTO.File);
         if(!check.IsSuccess) return Result.Failure(check.Error);
+
+        var identity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+        var email = identity.FindFirst(ClaimTypes.Email);
         
-        var user = await _userManager.FindByNameAsync(storageItemDTO.Username);
+        var user = await _userManager.FindByEmailAsync(email.Value);
         if (user == null) return Result.Failure(AuthenticationErrors.UserNotFound);
         
         string hash = string.Empty;
@@ -70,7 +75,7 @@ public class StorageService : IStorageService
         }
         
         var created = DateTime.UtcNow;
-    
+        
         var dimensions = MetadataExtract.ExtractGIFDimensions(storageItemDTO.File);
         var path = Path.Combine(PATH, hash.Substring(0, 10), storageItemDTO.Name + ".gif");
 
@@ -80,8 +85,6 @@ public class StorageService : IStorageService
             Tags = tags, Path = path, Created = created, Width = dimensions.width, Height = dimensions.height 
         };
 
-        await _context.StorageItems.AddAsync(storageItem);
-        
         var saveResult = await SaveInStorageAsync(storageItem, storageItemDTO.File);
         if (!saveResult.IsSuccess) return Result.Failure(StorageServiceErrors.FailedSaveOnStorage);
         
@@ -92,6 +95,8 @@ public class StorageService : IStorageService
 
     public async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
     {
+        // TODO: Check not on disk by filename, but in db with hash, or on disk with hash.
+        // Because now same files with different name get added to the same folder
         var isExists = File.Exists(storageItem.Path);
         if (isExists) Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage);
         Directory.CreateDirectory(Path.GetDirectoryName(storageItem.Path));
