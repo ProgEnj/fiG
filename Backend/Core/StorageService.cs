@@ -32,13 +32,13 @@ public class StorageService : IStorageService
      * Find file by name, tags
      * Check file header for gif[x]
      */
-
-    public async Task<Result<List<MainPageGifDTO>>> RetrieveGIFAsync()
+    
+    public async Task<Result<MainPageGifResponseDTO>> RetrieveGIFAsync()
     {
-        var gifs = await _context.StorageItems.Take(10).Select(x =>
+        var gifs = await _context.StorageItems.Take(12).Select(x =>
             new MainPageGifDTO(x.Name, x.Path.Replace("\\", "/"), x.Hash.Substring(0, 10), x.Tags)).ToListAsync();
         
-        return Result.Success(gifs);
+        return Result.Success(new MainPageGifResponseDTO(){gifItems = gifs});
     }
     
     public async Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO)
@@ -84,6 +84,8 @@ public class StorageService : IStorageService
             UserID = user.Id, Hash = hash, Name = storageItemDTO.Name,
             Tags = tags, Path = path, Created = created, Width = dimensions.width, Height = dimensions.height 
         };
+
+        await _context.StorageItems.AddAsync(storageItem);
 
         var saveResult = await SaveInStorageAsync(storageItem, storageItemDTO.File);
         if (!saveResult.IsSuccess) return Result.Failure(StorageServiceErrors.FailedSaveOnStorage);

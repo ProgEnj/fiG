@@ -24,7 +24,6 @@ export class LoginFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    console.log(this._authService.IsLoggedIn());
   }
 
   loginFormToggle() {

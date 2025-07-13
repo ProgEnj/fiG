@@ -1,8 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthenticationService } from './authentication.service';
+import { MainPageGifsResponse } from '../model/main-page-gifs-response.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +18,9 @@ export class FileService {
     return this._http.post(environment.host + "/file/upload", formData, 
       { withCredentials: true, observe: "response", headers: headers }
     );
+  }
+
+  GetMainPageGifs(): Observable<HttpResponse<MainPageGifsResponse>> {
+    return this._http.get<MainPageGifsResponse>(environment.host + "/file/mainpage", { observe: "response" });
   }
 }
