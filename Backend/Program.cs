@@ -46,10 +46,12 @@ if (app.Environment.IsEnvironment("Development") || app.Environment.IsEnvironmen
 }
 
 app.UseHttpsRedirection();
+
 if (app.Environment.IsEnvironment("DevelopmentLocal"))
 {
     app.UseCors();
 }
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

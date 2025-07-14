@@ -1,4 +1,4 @@
-FROM node:slim as build
+FROM node:slim AS build
 
 WORKDIR /usr/src/app
 
@@ -8,7 +8,8 @@ RUN npm install
 COPY . . 
 RUN npm run build
 
-FROM nginx as run
+FROM nginx AS run
 
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d/nginx.conf
 COPY --from=build /usr/src/app/dist/frontend /usr/share/nginx/html

@@ -77,7 +77,7 @@ public class StorageService : IStorageService
         var created = DateTime.UtcNow;
         
         var dimensions = MetadataExtract.ExtractGIFDimensions(storageItemDTO.File);
-        var path = Path.Combine(PATH, hash.Substring(0, 10), storageItemDTO.Name + ".gif");
+        var path = Path.Combine(hash.Substring(0, 10), storageItemDTO.Name + ".gif");
 
         var storageItem = new StorageItem()
         {
@@ -97,13 +97,14 @@ public class StorageService : IStorageService
 
     public async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
     {
+        string diskPATH = Path.Combine(PATH, storageItem.Path);
         // TODO: Check not on disk by filename, but in db with hash, or on disk with hash.
         // Because now same files with different name get added to the same folder
-        var isExists = File.Exists(storageItem.Path);
+        var isExists = File.Exists(diskPATH);
         if (isExists) Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage);
-        Directory.CreateDirectory(Path.GetDirectoryName(storageItem.Path));
+        Directory.CreateDirectory(Path.GetDirectoryName(diskPATH));
         
-        using (var fileStream = File.Create(storageItem.Path))
+        using (var fileStream = File.Create(diskPATH))
         {
             await file.CopyToAsync(fileStream);
         }

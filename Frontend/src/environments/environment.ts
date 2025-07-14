@@ -1,4 +1,4 @@
 export const environment = {
-    host: "http://backend:8080",
+    host: "http://localhost/api",
     static: "/static/gifs"
 };

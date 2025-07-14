@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - nginx-static-data:/static/gifs/
+    depends_on:
+      - backend
     ports:
       - 80:80
 
@@ -15,7 +17,7 @@ services:
       context: ./Backend
       dockerfile: Dockerfile
     volumes:
-        - nginx-static-data:/static/gifs/
+      - nginx-static-data:/static/gifs/
     depends_on:
       db:
         condition: service_healthy
@@ -23,24 +25,24 @@ services:
     # - 5237:8080
 
   db:
-      image: postgres
-      container_name: db
-      restart: always
-      secrets:
-        - db-password
-      volumes:
-        - figdb-data:/var/lib/postgresql/data
-      environment:
-        - POSTGRES_DB=figdb
-        - POSTGRES_USER=postgresdocker
-        - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-      ports:
-        - 5433:5432
-      healthcheck:
-        test: [ "CMD", "pg_isready", "--username=postgresdocker", "--dbname=figdb", ]
-        interval: 1s
-        timeout: 5s
-        retries: 5
+    image: postgres
+    container_name: db
+    restart: always
+    secrets:
+      - db-password
+    volumes:
+      - figdb-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=figdb
+      - POSTGRES_USER=postgresdocker
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    ports:
+      - 5433:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "--username=postgresdocker", "--dbname=figdb", ]
+      interval: 1s
+      timeout: 5s
+      retries: 5
 
 volumes:
   figdb-data:
