@@ -15,12 +15,14 @@ public class StorageService : IStorageService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    public static string PATH = "";
+    private static string PATH = "";
+    private static string PATHDEVLOCAL = "";
 
     public StorageService(UserManager<ApplicationUser> userManager, IConfiguration configuration, ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         PATH = configuration.GetSection("CoreSettings").GetValue<string>("PATH");
+        PATHDEVLOCAL = configuration.GetSection("CoreSettings").GetValue<string>("PATHDEVLOCAL");
         _context = context;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -36,7 +38,7 @@ public class StorageService : IStorageService
     public async Task<Result<MainPageGifResponseDTO>> RetrieveGIFAsync()
     {
         var gifs = await _context.StorageItems.Take(12).Select(x =>
-            new MainPageGifDTO(x.Name, x.Path.Replace("\\", "/"), x.Hash.Substring(0, 10), x.Tags)).ToListAsync();
+            new MainPageGifDTO(x.Name, x.Path, x.Hash.Substring(0, 10), x.Tags)).ToListAsync();
         
         return Result.Success(new MainPageGifResponseDTO(){gifItems = gifs});
     }
@@ -97,7 +99,15 @@ public class StorageService : IStorageService
 
     public async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
     {
-        string diskPATH = Path.Combine(PATH, storageItem.Path);
+        string diskPATH = "";
+        if (PATHDEVLOCAL == null)
+        {
+            diskPATH = Path.Combine(PATH, storageItem.Path);
+        }
+        else
+        {
+            diskPATH = Path.Combine(PATHDEVLOCAL, storageItem.Path);
+        }
         // TODO: Check not on disk by filename, but in db with hash, or on disk with hash.
         // Because now same files with different name get added to the same folder
         var isExists = File.Exists(diskPATH);
