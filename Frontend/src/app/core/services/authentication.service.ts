@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../../environments/environment';
 import { firstValueFrom, Observable } from 'rxjs';
 import { UserRegisterRequest } from '../model/user-register-request.dto';
@@ -11,6 +12,7 @@ import { UserLoginResponse } from '../model/user-login-response.dto';
 })
 export class AuthenticationService {
   private http: HttpClient = inject(HttpClient);
+  private jwtService: JwtHelperService = new JwtHelperService();
 
   private cred = {username: 'username', jwtToken: 'token'};
 
@@ -50,12 +52,15 @@ export class AuthenticationService {
       }
   }
 
-  IsLoggedIn(): boolean {
-    if(localStorage.getItem(this.cred.jwtToken) != null) {
-      return true;
+   IsLoggedIn(): boolean {
+    let token = localStorage.getItem(this.cred.jwtToken);
+    let isExpired = this.jwtService.isTokenExpired(token);
+
+    if( token == null || isExpired) {
+      return false;
     }
     else {
-      return false;
+      return true;
     }
   }
 

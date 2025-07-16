@@ -12,14 +12,11 @@
             </div>
         } @else {
             <div id="signin" class="h-full">
-                <button type="button" class="h-full btn" (click)="login.loginFormToggle()"><span>Sign in</span></button>
+                <button type="button" class="h-full btn" (click)="this.Navigate('/login')"><span>Sign in</span></button>
             </div>
             <div id="signup" class="h-full">
-                <button type="button" class="h-full btn" (click)="auth.authFormToggle()"><span>Sign up</span></button>
+                <button type="button" class="h-full btn" (click)="this.Navigate('/signup')"><span>Sign up</span></button>
             </div>
         }
     </div>
 </div>
-
-<app-authentication-form #auth></app-authentication-form>
-<app-login-form #login></app-login-form>
