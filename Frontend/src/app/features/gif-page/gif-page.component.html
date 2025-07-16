@@ -1,2 +1,33 @@
-<p>View works!</p>
+<div id="gif-page-wrapper" class="flex h-full w-4/5 mx-auto flex-col items-center pt-5 gap-5">
+    <div id="gif-name" class="self-start">
+        <p class="text-xl font-bold">Placeholder gif name</p>
+    </div>
+    <div id="gif" class="flex h-4/5">
+        <img src="http://localhost:8888/1558211941/Spike smoking.gif" class="self-center h-auto md:h-full">
+    </div>
+    <div id="gif-info" class="flex flex-col md:flex-row self-start justify-between items-center w-full">
+        <div id="uploaded-user" class="flex items-center gap-2">
+            <div id="avatar-placeholder">
+                <img src="/Profile_avatar_placeholder.png" id="avatar-placeholder" class="w-10 rounded-full">
+            </div>
+            <div id="Username">
+                <p class="text-md md:text-lg font-bold">Placeholder username</p>
+            </div>
+        </div>
+        <div id="tags" class="flex gap-1">
+            <div id="tag" class="text-black font-semibold px-2 py-1">
+                Tags:
+            </div>
+            <div id="tag" class="bg-cyan-500 text-white font-semibold px-2 py-1 rounded-full shadow hover:brightness-110 transition">
+                #123
+            </div>
+            <div id="tag" class="bg-cyan-500 text-white font-semibold px-2 py-1 rounded-full shadow hover:brightness-110 transition">
+                #123
+            </div>
+            <div id="tag" class="bg-cyan-500 text-white font-semibold px-2 py-1 rounded-full shadow hover:brightness-110 transition">
+                #123
+            </div>
+        </div>
+    </div>
+</div>
 <router-outlet/>
