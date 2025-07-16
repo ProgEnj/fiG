@@ -9,7 +9,7 @@ export const uploadGuard: CanActivateFn = (route, state) => {
     return true;
   }
   else {
-    router.navigate(['/login']);
+    router.navigate([router.url, 'login']);
     return false;
   }
 };

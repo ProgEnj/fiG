@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Va
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-authentication-form',
@@ -14,6 +15,7 @@ export class AuthenticationFormComponent implements OnInit, OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private _authenticationService = inject(AuthenticationService);
   private _router = inject(Router);
+  private _location = inject(Location);
   private bodyElement = document.body;
 
   isAuthFormShown: Boolean = false;
@@ -37,7 +39,7 @@ export class AuthenticationFormComponent implements OnInit, OnDestroy {
   }
 
   authFormToggle() {
-    this._router.navigate(['/']);
+    this._location.back();
   }
 
   onSubmit() {

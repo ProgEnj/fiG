@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ClickStopPropagationDirective } from '../../shared/directives/click-stop-propagation.directive';
 import { AuthenticationService } from '../../core/services/authentication.service';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-login-form',
@@ -15,6 +16,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   private _formBuilder = inject(FormBuilder);
   private _authService = inject(AuthenticationService);
   private _router = inject(Router);
+  private _location = inject(Location);
   private bodyElement = document.body;
 
   loginForm = this._formBuilder.group({
@@ -32,7 +34,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   }
 
   loginFormToggle() {
-    this._router.navigate(['/']);
+    this._location.back();
   }
 
   onSubmit() {

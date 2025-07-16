@@ -12,7 +12,6 @@ namespace Backend.Controllers;
 [Route("/api/[controller]")]
 public class FileController(IStorageService _storageService) : ControllerBase
 {
-    [HttpPost("upload")]
     [Authorize]
     public async Task<IActionResult> UploadFile([FromForm] StorageItemRequestDTO storageItemDTO, [FromForm] string tags)
     {

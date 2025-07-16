@@ -21,7 +21,7 @@ export class PageHeaderComponent implements AfterViewInit {
   }
 
   Navigate(path: string) {
-    this._router.navigate([path]);
+    this._router.navigate([this._router.url, path]);
   }
 
 }
