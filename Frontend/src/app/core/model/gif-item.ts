@@ -1,7 +1,7 @@
 import { Tag } from "./tag"
 
 export interface GifItem {
-    id: number
+    id: string
     name: string
     username: string
     path: string
