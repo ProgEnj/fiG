@@ -15,6 +15,8 @@ public class StorageService : IStorageService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly int _mainPageGifNumber = 8;
+    private readonly int _folderNameLength = 10;
     private static string PATH = "";
     private static string PATHDEVLOCAL = "";
 
@@ -35,10 +37,38 @@ public class StorageService : IStorageService
      * Check file header for gif[x]
      */
     
-    public async Task<Result<MainPageGifResponseDTO>> RetrieveGIFAsync()
+    public async Task<Result<GifDTO>> GetGifAsync(int id)
     {
-        var gifs = await _context.StorageItems.Take(12).Select(x =>
-            new MainPageGifDTO(x.Name, x.Path, x.Hash.Substring(0, 10), x.Tags)).ToListAsync();
+        // For some reason foundItem returned
+        // from query with FirstOrDefaultAsync includes Storageitem's in List<Tag>
+        // they have many-to-many relationship so on serialization it goes to endless
+        // cycle GifDTO -> List<Tags> -> StorageItem<Tags> -> ... and crash
+        // this is not happening when dto is created from select.
+        
+        // Investigate or/and fix
+        
+        // EF core populates navigation properties on demand
+        // Returned StorageItem object will have cycle thing
+        // The one projected to DTO will have navigation properties on demand. 
+        // To include more use .Include(...).ThenInclude(...)
+
+        var foundItem = await _context.StorageItems
+            .Where(foundItem => foundItem.Id == id)
+            .Select(foundItem => new GifDTO(foundItem.Id, foundItem.Name, foundItem.User.UserName, foundItem.Path, foundItem.Hash, 
+                foundItem.Tags.Select(tag => new TagDTO(tag.Id, tag.Name)).ToList()))
+            .FirstOrDefaultAsync();
+
+        if (foundItem == null) return Result.Failure<GifDTO>(StorageServiceErrors.ItemNotFound);
+        
+        return Result.Success(foundItem);
+    }
+    
+    public async Task<Result<MainPageGifResponseDTO>> RetrieveMainPageGifsAsync()
+    {
+        var gifs = await _context.StorageItems.Take(_mainPageGifNumber).Select(x =>
+            new GifDTO(x.Id, x.Name, x.User.UserName, x.Path, x.Hash.Substring(0, _folderNameLength), 
+                x.Tags.Select(tag => new TagDTO(tag.Id, tag.Name)).ToList()
+            )).ToListAsync();
         
         return Result.Success(new MainPageGifResponseDTO(){gifItems = gifs});
     }
@@ -79,11 +109,11 @@ public class StorageService : IStorageService
         var created = DateTime.UtcNow;
         
         var dimensions = MetadataExtract.ExtractGIFDimensions(storageItemDTO.File);
-        var path = Path.Combine(hash.Substring(0, 10), storageItemDTO.Name + ".gif");
+        var path = Path.Combine(hash.Substring(0, _folderNameLength), storageItemDTO.Name + ".gif");
 
         var storageItem = new StorageItem()
         {
-            UserID = user.Id, Hash = hash, Name = storageItemDTO.Name,
+            User = user, Hash = hash, Name = storageItemDTO.Name,
             Tags = tags, Path = path, Created = created, Width = dimensions.width, Height = dimensions.height 
         };
 

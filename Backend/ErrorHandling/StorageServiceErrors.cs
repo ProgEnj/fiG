@@ -6,4 +6,5 @@ public static class StorageServiceErrors
     public static readonly Error GifAlreadyExists = new("Gif already exists");
     public static readonly Error FileAlreadyExistsOnStorage = new("File already exists on storage");
     public static readonly Error FailedSaveOnStorage = new("Failed to save file on storage");
+    public static readonly Error ItemNotFound = new("Requested item not found");
 }

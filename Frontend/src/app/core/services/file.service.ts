@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthenticationService } from './authentication.service';
 import { MainPageGifsResponse } from '../model/main-page-gifs-response.dto';
+import { GifItem } from '../model/gif-item';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +23,9 @@ export class FileService {
 
   GetMainPageGifs(): Observable<HttpResponse<MainPageGifsResponse>> {
     return this._http.get<MainPageGifsResponse>(environment.host + "/file/mainpage", { observe: "response" });
+  }
+
+  GetGifById(id: string): Observable<HttpResponse<GifItem>> {
+    return this._http.get<GifItem>(environment.host + `/file/${id}`, { observe: "response" });
   }
 }

@@ -1,3 +1,4 @@
+using Backend.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Model;
@@ -6,7 +7,7 @@ namespace Backend.Model;
 public class StorageItem
 {
     public int Id { get; set; }
-    public string UserID  { get; set; }
+    public ApplicationUser User  { get; set; }
     public string Hash { get; set; }
     public string Name { get; set; }
     public List<Tag> Tags { get; set; }
