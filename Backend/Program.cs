@@ -29,6 +29,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IEmailSender<ApplicationUser>, EmailSenderDummy>();

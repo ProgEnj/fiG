@@ -32,7 +32,7 @@ public class StorageService : IStorageService
     /*
      * Recieve file[x], check metadata[x], initialize object[x], check for already exists[x], create db entry[x], save on storage[x]
      * Remove file, Remove db entry
-     * Retrieve gifs
+     * Retrieve gifs [x]
      * Find file by name, tags
      * Check file header for gif[x]
      */

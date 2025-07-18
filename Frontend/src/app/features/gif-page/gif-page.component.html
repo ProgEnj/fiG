@@ -1,28 +1,31 @@
-<div id="gif-page-wrapper" class="flex h-full w-4/5 mx-auto flex-col items-center pt-5 gap-5">
-    <div id="gif-name" class="self-start">
-        <p class="text-xl font-bold">{{gif?.name}}</p>
-    </div>
-    <div id="gif" class="flex h-4/5">
-        <img src="{{gif?.path}}" class="self-center h-auto md:h-full">
-    </div>
-    <div id="gif-info" class="flex flex-col md:flex-row self-start justify-between items-center w-full">
-        <div id="uploaded-user" class="flex items-center gap-2">
-            <div id="avatar-placeholder">
-                <img src="/Profile_avatar_placeholder.png" id="avatar-placeholder" class="w-10 rounded-full">
-            </div>
-            <div id="Username">
-                <p class="text-md md:text-lg font-bold">{{gif?.username}}<p>
-            </div>
+<div class="flex flex-col h-full">
+    <app-gif-search></app-gif-search>
+    <div id="gif-page-wrapper" class="flex flex-col w-4/5 h-full mx-auto items-center gap-5">
+        <div id="gif-name" class="self-start">
+            <p class="text-xl font-bold">{{gif?.name}}</p>
         </div>
-        <div id="tags" class="flex gap-1">
-            <div id="tag" class="text-black font-semibold px-2 py-1">
-                Tags:
-            </div>
-            @for (tag of gif?.tags; track tag.id) {
-                <div id="tag" class="bg-cyan-500 text-white font-semibold px-2 py-1 rounded-full shadow hover:brightness-110 transition">
-                    #{{tag.name}}
+        <div id="gif" class="flex h-auto md:h-3/4">
+            <img src="{{gif?.path}}" class="self-center h-auto md:h-full">
+        </div>
+        <div id="gif-info" class="flex flex-col gap-5 md:gap-0 md:flex-row self-start justify-between items-center w-full">
+            <div id="uploaded-user" class="flex items-center gap-2">
+                <div id="avatar-placeholder">
+                    <img src="/Profile_avatar_placeholder.png" id="avatar-placeholder" class="w-10 rounded-full">
                 </div>
-            }
+                <div id="Username">
+                    <p class="text-md md:text-lg font-bold">{{gif?.username}}<p>
+                </div>
+            </div>
+            <div id="tags" class="flex gap-1">
+                <div id="tag" class="text-black font-semibold px-2 py-1">
+                    Tags:
+                </div>
+                @for (tag of gif?.tags; track tag.id) {
+                    <div id="tag" class="bg-cyan-500 text-white font-semibold px-2 py-1 rounded-full shadow hover:brightness-110 transition">
+                        #{{tag.name}}
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>

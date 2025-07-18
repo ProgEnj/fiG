@@ -2,10 +2,11 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { FileService } from '../../core/services/file.service';
 import { GifItem } from '../../core/model/gif-item';
+import { GifSearchComponent } from '../gif-search/gif-search.component';
 
 @Component({
   selector: 'app-gif-page',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, GifSearchComponent],
   templateUrl: './gif-page.component.html',
   styleUrl: './gif-page.component.scss',
 })
