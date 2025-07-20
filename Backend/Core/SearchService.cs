@@ -32,13 +32,12 @@ public class SearchService : ISearchService
     // Nevermind, EF Core is too smart and uses db functions to lowercase things
     public async Task<Result<SearchResponseDTO>> TagSearch(List<string> tags)
     {
-        
         if (tags.Count == 0) return Result.Failure<SearchResponseDTO>(SearchErrors.EmptyQuery);
         
         var foundItems = await _context.StorageItems
             .Where(
                 item => item.Tags.Select(b => b.Name.ToLower())
-                    .Any(tag => tags.Contains(tag))
+                    .Any(tag => tags.Any(x => tag.Contains(x)))
                 )
             .Select(item => new SearchItemResponseDTO(item.Id, item.Name, item.Path))
             .ToListAsync();

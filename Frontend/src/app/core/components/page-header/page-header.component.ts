@@ -2,10 +2,11 @@ import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HeaderProfileDisplayComponent } from '../header-profile-display/header-profile-display.component';
 import { AuthenticationService } from '../../services/authentication.service';
+import { GifSearchComponent } from "../../../features/gif-search/gif-search.component";
 
 @Component({
   selector: 'app-page-header',
-  imports: [RouterLink, HeaderProfileDisplayComponent],
+  imports: [RouterLink, HeaderProfileDisplayComponent, GifSearchComponent],
   templateUrl: './page-header.component.html',
   styleUrl: './page-header.component.scss'
 })
