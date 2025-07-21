@@ -13,8 +13,8 @@ import { UserLoginResponse } from '../model/user-login-response.dto';
 export class AuthenticationService {
   private http: HttpClient = inject(HttpClient);
   private jwtService: JwtHelperService = new JwtHelperService();
-
   private cred = {username: 'username', jwtToken: 'token'};
+  private isAdmin: boolean = false;
 
   GetToken(): string | null {
     return localStorage.getItem(this.cred.jwtToken);
@@ -30,6 +30,17 @@ export class AuthenticationService {
 
   SetUsername(username: string): void {
     localStorage.setItem(this.cred.username, username);
+  }
+
+  GetIsAdmin(): boolean {
+    return this.isAdmin;
+  }
+
+  CheckForAdmin() {
+    if(this.IsLoggedIn()) {
+      var token = this.jwtService.decodeToken(this.GetToken()!);
+      console.log(token);
+    }
   }
 
   ClearLoginInfo() {

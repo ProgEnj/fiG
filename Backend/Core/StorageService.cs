@@ -33,7 +33,7 @@ public class StorageService : IStorageService
      * Recieve file[x], check metadata[x], initialize object[x], check for already exists[x], create db entry[x], save on storage[x]
      * Remove file, Remove db entry
      * Retrieve gifs [x]
-     * Find file by name, tags
+     * Find file by name, tags [x]
      * Check file header for gif[x]
      */
     
@@ -75,15 +75,6 @@ public class StorageService : IStorageService
     
     public async Task<Result> UploadGIFAsync(StorageItemRequestDTO storageItemDTO)
     {
-        var check = MetadataExtract.IsGIF(storageItemDTO.File);
-        if(!check.IsSuccess) return Result.Failure(check.Error);
-
-        var identity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
-        var email = identity.FindFirst(ClaimTypes.Email);
-        
-        var user = await _userManager.FindByEmailAsync(email.Value);
-        if (user == null) return Result.Failure(AuthenticationErrors.UserNotFound);
-        
         string hash = string.Empty;
         using (var stream = storageItemDTO.File.OpenReadStream())
         {
@@ -92,6 +83,18 @@ public class StorageService : IStorageService
                 hash = string.Join("", await sha256.ComputeHashAsync(stream));
             }
         }
+
+        var isGifExists = await this.isGifExistsOnStorage(hash);
+        if (!isGifExists.IsSuccess) return isGifExists;
+        
+        var isGif = MetadataExtract.IsGIF(storageItemDTO.File);
+        if(!isGif.IsSuccess) return Result.Failure(isGif.Error);
+
+        var identity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
+        var email = identity.FindFirst(ClaimTypes.Email);
+        
+        var user = await _userManager.FindByEmailAsync(email.Value);
+        if (user == null) return Result.Failure(AuthenticationErrors.UserNotFound);
         
         // Check if tags already exist
         List<Tag> tags = new List<Tag>();
@@ -103,6 +106,7 @@ public class StorageService : IStorageService
                 tags.Add(new Tag() { Name = tagName }); 
                 continue;
             }
+            // Already existing objects will not be added to db
             tags.Add(foundTag);
         }
         
@@ -118,36 +122,74 @@ public class StorageService : IStorageService
         };
 
         await _context.StorageItems.AddAsync(storageItem);
-
+        await _context.SaveChangesAsync();
+        
         var saveResult = await SaveInStorageAsync(storageItem, storageItemDTO.File);
         if (!saveResult.IsSuccess) return Result.Failure(StorageServiceErrors.FailedSaveOnStorage);
-        
-        await _context.SaveChangesAsync();
         
         return Result.Success();
     }
 
-    public async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
+    public string GetDiskPath()
     {
-        string diskPATH = "";
-        if (PATHDEVLOCAL == null)
-        {
-            diskPATH = Path.Combine(PATH, storageItem.Path);
-        }
-        else
-        {
-            diskPATH = Path.Combine(PATHDEVLOCAL, storageItem.Path);
-        }
-        // TODO: Check not on disk by filename, but in db with hash, or on disk with hash.
-        // Because now same files with different name get added to the same folder
-        var isExists = File.Exists(diskPATH);
-        if (isExists) Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage);
-        Directory.CreateDirectory(Path.GetDirectoryName(diskPATH));
+        return PATHDEVLOCAL == null ? PATH : PATHDEVLOCAL;
+    }
+
+    private async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
+    {
+        var diskPath = Path.Combine(this.GetDiskPath(), storageItem.Path);
         
-        using (var fileStream = File.Create(diskPATH))
+        await this.isGifExistsOnStorage(storageItem.Hash);
+        
+        Directory.CreateDirectory(Path.GetDirectoryName(diskPath));
+        
+        using (var fileStream = File.Create(diskPath))
         {
             await file.CopyToAsync(fileStream);
         }
+        
+        return Result.Success();
+    }
+
+    public async Task<Result> isGifExistsOnStorage(string hash)
+    {
+        var diskPath = this.GetDiskPath();
+        diskPath = Path.Combine(diskPath, hash.Substring(0, this._folderNameLength));
+        
+        if (!Directory.Exists(diskPath)) return Result.Success();
+        
+        var file = Directory.GetFiles(diskPath).FirstOrDefault();
+        if (file == null) return Result.Failure(StorageServiceErrors.ItemNotFound);
+        
+        string foundFileHash = string.Empty;
+        using (var stream = File.OpenRead(Path.Combine(diskPath, file)))
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                foundFileHash = string.Join("", await sha256.ComputeHashAsync(stream));
+            }
+        }
+        
+        return foundFileHash == hash 
+            ? Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage) 
+            : Result.Success();
+    }
+    
+    public async Task<Result> DeleteGIFAsync(int id)
+    {
+        var storageItem = await _context.StorageItems.FirstOrDefaultAsync(item => item.Id == id);
+        if(storageItem == null) Result.Failure(StorageServiceErrors.ItemNotFound);
+
+        var isGifExistsResult = await isGifExistsOnStorage(storageItem.Hash);
+        if(!isGifExistsResult.IsSuccess) return isGifExistsResult;
+
+        _context.StorageItems.Remove(storageItem);
+        await _context.SaveChangesAsync();
+
+        var directoryPath = storageItem.Path.Substring(0, storageItem.Path.LastIndexOf(Path.PathSeparator));
+        
+        File.Delete(storageItem.Path);
+        Directory.Delete(directoryPath);
         
         return Result.Success();
     }

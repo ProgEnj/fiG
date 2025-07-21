@@ -40,6 +40,12 @@ await context.Database.MigrateAsync();
 
 var app = builder.Build();
 
+var roleManager = app.Services.GetService<RoleManager<IdentityRole>>();
+if (await roleManager.RoleExistsAsync("Admin"))
+{
+    await roleManager.CreateAsync(new IdentityRole("Admin"));
+}
+
 if (app.Environment.IsEnvironment("Development") || app.Environment.IsEnvironment("DevelopmentLocal"))
 {
     app.UseSwagger();

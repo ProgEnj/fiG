@@ -32,4 +32,12 @@ public class FileController(IStorageService _storageService) : ControllerBase
         var result = await _storageService.UploadGIFAsync(storageItemDTO);
         return result.IsSuccess ? Ok() : StatusCode(500, result.Error.Message);
     }
+    
+    [Authorize(Policy = "AdminPolicy")]
+    [HttpDelete("delete")]
+    public async Task<IActionResult> RemoveGif(int id)
+    {
+        var result = await _storageService.DeleteGIFAsync(id);
+        return result.IsSuccess ? Ok() : StatusCode(500, result.Error.Message);
+    }
 }

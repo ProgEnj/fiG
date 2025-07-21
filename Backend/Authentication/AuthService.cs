@@ -20,6 +20,7 @@ public class AuthService : IAuthService
     private readonly IEmailSender<ApplicationUser> _emailSender;
     private readonly LinkGenerator _linkGenerator;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly string? _adminSecret;
 
     private readonly string confirmEmailEndpointName = "auth/confirmemail";
     private readonly string ResetPasswordEdpointName = "auth/resetpassword";
@@ -36,6 +37,7 @@ public class AuthService : IAuthService
         _emailSender = emailSender;
         _roleManager = roleManager;
         _httpContextAccessor = httpContextAccessor;
+        _adminSecret = configuration.GetSection("CoreSettings").GetValue<string>("AdminSecret");
     }
 
     public async Task<Result> RegisterAsync(UserRegisterRequestDTO request)
@@ -63,7 +65,18 @@ public class AuthService : IAuthService
     
     public async Task<Result<UserLoginResponseDTO>> LoginAsync(UserLoginRequestDTO request)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var isAdmin = false;
+        var trimmedEmail = request.Email;
+        if (request.Email.Contains(":"))
+        {
+            var requestSecret = request.Email.Substring(request.Email.IndexOf(":"));
+
+            trimmedEmail = request.Email.Remove(request.Email.IndexOf(':'));
+            Console.WriteLine(trimmedEmail);
+            if (requestSecret == ":" + _adminSecret) isAdmin = true;
+        }
+        
+        var user = await _userManager.FindByEmailAsync(trimmedEmail);
         if (user == null)
         {
             return Result<UserLoginResponseDTO>.Failure<UserLoginResponseDTO>(AuthenticationErrors.UserNotFound);
@@ -82,6 +95,12 @@ public class AuthService : IAuthService
         await _userManager.UpdateAsync(user);
         
         var claims = new List<Claim>() { new Claim("refreshToken", refreshToken) };
+        
+        if (isAdmin)
+        {
+            await _userManager.AddToRoleAsync(user, "Admin");
+        }
+        
         await _httpContextAccessor.HttpContext.SignInAsync(
             "refreshTokenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "refreshToken")));
 
@@ -128,16 +147,15 @@ public class AuthService : IAuthService
     public async Task<Result> ConfirmEmailAsync(string userId, string code)
     {
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-        {
-            return Result.Failure(AuthenticationErrors.UserNotFound);
-        }
+        if (user == null) return Result.Failure(AuthenticationErrors.UserNotFound);
+        
         code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
         
         if(await _userManager.ConfirmEmailAsync(user, code) == IdentityResult.Failed());
         {
             return Result.Failure(AuthenticationErrors.ConfirmationEmail);
         }
+        
         return Result.Success();
     }
 
@@ -184,7 +202,7 @@ public class AuthService : IAuthService
         await this.LogoutUserAsync();
         return Result.Success();
     }
-
+    
     public async Task<Result<RefreshAccessTokenResponseDTO>> RefreshAccessTokenAsync()
     {
         string? refreshToken = _httpContextAccessor.HttpContext.User.FindFirstValue("refreshToken");

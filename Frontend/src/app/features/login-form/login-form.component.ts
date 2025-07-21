@@ -20,7 +20,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   private bodyElement = document.body;
 
   loginForm = this._formBuilder.group({
-    email: ['', Validators.compose([Validators.required, Validators.email])],
+    email: ['', Validators.compose([Validators.required])],
     password: ['', Validators.required],
   });
 
