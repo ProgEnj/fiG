@@ -36,16 +36,20 @@ export class AuthenticationService {
     return this.isAdmin;
   }
 
+  // I know that this is bad and usually (always) admins
+  // are login through separate subdomain or something
+  // but it's ok for this project
   CheckForAdmin() {
     if(this.IsLoggedIn()) {
       var token = this.jwtService.decodeToken(this.GetToken()!);
-      console.log(token);
+      if (token["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] == "Admin") this.isAdmin = true;
     }
   }
 
   ClearLoginInfo() {
     localStorage.removeItem(this.cred.jwtToken);
     localStorage.removeItem(this.cred.username)
+    this.isAdmin = false;
   }
 
   async RefreshToken(): Promise<boolean> {

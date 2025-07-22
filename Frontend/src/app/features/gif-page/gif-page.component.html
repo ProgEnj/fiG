@@ -1,7 +1,12 @@
 <div class="flex flex-col h-full">
-    <div id="gif-page-wrapper" class="flex flex-col w-4/5 h-full mx-auto items-center gap-5">
-        <div id="gif-name" class="self-start">
+    <div id="gif-page-wrapper" class="flex flex-col w-4/5 h-full mx-auto items-center gap-3">
+        <div id="gif-name" class="flex justify-between gap-10 self-start w-full">
             <p class="text-xl font-bold">{{gif?.name}}</p>
+            @if(this._authService.GetIsAdmin()){
+                <button (click)="this.onDelete()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+                    Delete
+                </button>
+            }
         </div>
         <div id="gif" class="flex h-auto md:h-3/4">
             <img src="{{gif?.path}}" class="self-center h-auto md:h-full">

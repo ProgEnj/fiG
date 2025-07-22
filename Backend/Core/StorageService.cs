@@ -4,7 +4,6 @@ using Backend.DTOs;
 using Backend.ErrorHandling;
 using Backend.Identity;
 using Backend.Model;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +16,8 @@ public class StorageService : IStorageService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly int _mainPageGifNumber = 8;
     private readonly int _folderNameLength = 10;
-    private static string PATH = "";
     private static string PATHDEVLOCAL = "";
+    private static string PATH = "";
 
     public StorageService(UserManager<ApplicationUser> userManager, IConfiguration configuration, ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
     {
@@ -84,8 +83,7 @@ public class StorageService : IStorageService
             }
         }
 
-        var isGifExists = await this.isGifExistsOnStorage(hash);
-        if (!isGifExists.IsSuccess) return isGifExists;
+        if (await isGifExistsOnStorage(hash)) return Result.Failure(StorageServiceErrors.GifAlreadyExists);
         
         var isGif = MetadataExtract.IsGIF(storageItemDTO.File);
         if(!isGif.IsSuccess) return Result.Failure(isGif.Error);
@@ -113,7 +111,7 @@ public class StorageService : IStorageService
         var created = DateTime.UtcNow;
         
         var dimensions = MetadataExtract.ExtractGIFDimensions(storageItemDTO.File);
-        var path = Path.Combine(hash.Substring(0, _folderNameLength), storageItemDTO.Name + ".gif");
+        var path = Path.Combine(hash.Substring(0, _folderNameLength), storageItemDTO.Name + ".gif").Replace('\\', '/');
 
         var storageItem = new StorageItem()
         {
@@ -137,13 +135,13 @@ public class StorageService : IStorageService
 
     private async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
     {
-        var diskPath = Path.Combine(this.GetDiskPath(), storageItem.Path);
+        var gifDiskPath = Path.Combine(this.GetDiskPath(), storageItem.Path.Replace('/', '\\'));
         
         await this.isGifExistsOnStorage(storageItem.Hash);
         
-        Directory.CreateDirectory(Path.GetDirectoryName(diskPath));
+        Directory.CreateDirectory(Path.GetDirectoryName(gifDiskPath));
         
-        using (var fileStream = File.Create(diskPath))
+        using (var fileStream = File.Create(gifDiskPath))
         {
             await file.CopyToAsync(fileStream);
         }
@@ -151,28 +149,25 @@ public class StorageService : IStorageService
         return Result.Success();
     }
 
-    public async Task<Result> isGifExistsOnStorage(string hash)
+    public async Task<bool> isGifExistsOnStorage(string hash)
     {
-        var diskPath = this.GetDiskPath();
-        diskPath = Path.Combine(diskPath, hash.Substring(0, this._folderNameLength));
+        var directoryPath = Path.Combine(this.GetDiskPath(), hash.Substring(0, this._folderNameLength));
         
-        if (!Directory.Exists(diskPath)) return Result.Success();
+        if (!Directory.Exists(directoryPath)) return false;
         
-        var file = Directory.GetFiles(diskPath).FirstOrDefault();
-        if (file == null) return Result.Failure(StorageServiceErrors.ItemNotFound);
+        var file = Directory.GetFiles(directoryPath).FirstOrDefault();
+        if (file == null) return false;
         
         string foundFileHash = string.Empty;
-        using (var stream = File.OpenRead(Path.Combine(diskPath, file)))
+        using (var stream = File.OpenRead(Path.Combine(directoryPath, file)))
         {
             using (var sha256 = SHA256.Create())
             {
                 foundFileHash = string.Join("", await sha256.ComputeHashAsync(stream));
             }
         }
-        
-        return foundFileHash == hash 
-            ? Result.Failure(StorageServiceErrors.FileAlreadyExistsOnStorage) 
-            : Result.Success();
+
+        return foundFileHash == hash;
     }
     
     public async Task<Result> DeleteGIFAsync(int id)
@@ -180,15 +175,16 @@ public class StorageService : IStorageService
         var storageItem = await _context.StorageItems.FirstOrDefaultAsync(item => item.Id == id);
         if(storageItem == null) Result.Failure(StorageServiceErrors.ItemNotFound);
 
-        var isGifExistsResult = await isGifExistsOnStorage(storageItem.Hash);
-        if(!isGifExistsResult.IsSuccess) return isGifExistsResult;
+        if(!await isGifExistsOnStorage(storageItem.Hash)) 
+            return Result.Failure(StorageServiceErrors.ItemNotFound);
 
         _context.StorageItems.Remove(storageItem);
         await _context.SaveChangesAsync();
 
-        var directoryPath = storageItem.Path.Substring(0, storageItem.Path.LastIndexOf(Path.PathSeparator));
+        var gifDiskPath = Path.Combine(this.GetDiskPath(), storageItem.Path.Replace('/', '\\'));
+        var directoryPath = Path.Combine(this.GetDiskPath(), storageItem.Hash.Substring(0, this._folderNameLength));
         
-        File.Delete(storageItem.Path);
+        File.Delete(gifDiskPath);
         Directory.Delete(directoryPath);
         
         return Result.Success();

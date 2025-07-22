@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { GifSearchComponent } from '../gif-search/gif-search.component';
 import { FileService } from '../../core/services/file.service';
+import { environment } from '../../../environments/environment';
 import { GifItem } from '../../core/model/gif-item';
 
 @Component({
@@ -14,6 +15,7 @@ export class MainPageComponent implements OnInit {
   private _fileService = inject(FileService);
   private cols: number = 4;
   private gifDisplayGrid: Array<Array<GifItem>> = [];
+  public static: string = environment.static;
 
   ngOnInit(): void {
     this._fileService.GetMainPageGifs().subscribe(res => {

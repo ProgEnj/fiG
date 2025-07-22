@@ -45,9 +45,9 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         this.loginFormToggle();
         this._authService.SetToken(res.token);
         this._authService.SetUsername(res.username);
+        this._authService.CheckForAdmin();
         this._router.navigate(['/refresh']).then(() => this._router.navigate(['/']));
       });
   }
-
 }
 

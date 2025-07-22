@@ -66,9 +66,4 @@ public static class ConfigureExtension
             o.AddPolicy("RefreshTokenPolicy", policy => policy.RequireClaim("refreshToken"));
         });
     }
-
-    public static void CreateRoles()
-    {
-        
-    }
 }

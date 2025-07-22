@@ -34,8 +34,8 @@ public class FileController(IStorageService _storageService) : ControllerBase
     }
     
     [Authorize(Policy = "AdminPolicy")]
-    [HttpDelete("delete")]
-    public async Task<IActionResult> RemoveGif(int id)
+    [HttpPost("delete/{id:int}")]
+    public async Task<IActionResult> RemoveGif([FromRoute] int id)
     {
         var result = await _storageService.DeleteGIFAsync(id);
         return result.IsSuccess ? Ok() : StatusCode(500, result.Error.Message);

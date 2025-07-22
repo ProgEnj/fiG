@@ -28,4 +28,10 @@ export class FileService {
   GetGifById(id: string): Observable<HttpResponse<GifItem>> {
     return this._http.get<GifItem>(environment.host + `/file/${id}`, { observe: "response" });
   }
+
+  DeleteGif(id: string): Observable<any> {
+    let headers = new HttpHeaders().set("Authorization", "Bearer " + this._authService.GetToken());
+
+    return this._http.post(environment.host + `/file/delete/${id}`, {},{ withCredentials: true, observe: "response", headers: headers });
+  }
 }

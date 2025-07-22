@@ -4,7 +4,7 @@
         <div id="col1" class="flex flex-col gap-5 w-1/4">
             @for (item of this.GetGrid()[0]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
         </div>                                                       
@@ -12,7 +12,7 @@
         <div id="col2" class="flex flex-col gap-5 w-1/4">                  
             @for (item of this.GetGrid()[1]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
 
@@ -21,7 +21,7 @@
         <div id="col3" class="flex flex-col gap-5 w-1/4">
             @for (item of this.GetGrid()[2]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
 
@@ -30,7 +30,7 @@
         <div id="col4" class="flex flex-col gap-5 w-1/4">                 
             @for (item of this.GetGrid()[3]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
         </div>
@@ -40,12 +40,12 @@
         <div id="col1mob" class="flex flex-col gap-5 w-1/2">
             @for (item of this.GetGrid()[0]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
             @for (item of this.GetGrid()[1]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
         </div>                                                        
@@ -53,12 +53,12 @@
         <div id="col2mob" class="flex flex-col gap-5 w-1/2">                
             @for (item of this.GetGrid()[2]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
             @for (item of this.GetGrid()[3]; track $index) {
                 <a [routerLink]="['/view', item.id]">
-                    <div class=""><img src="{{item.path}}" alt="{{item.name}}" class="w-full"/></div>
+                    <div class=""><img src="{{this.static + item.path}}" alt="{{item.name}}" class="w-full"/></div>
                 </a>
             }
         </div>                                                                  
