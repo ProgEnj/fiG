@@ -88,6 +88,6 @@ export class AuthenticationService {
   }
 
   LogOut(): Observable<any> {
-    return this.http.post(environment.host + '/auth/logout', null, { withCredentials: true, observe: 'response' });
+    return this.http.post(environment.host + '/auth/logout', {}, { withCredentials: true, observe: 'response' });
   }
 }

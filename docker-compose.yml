@@ -18,6 +18,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - nginx-static-data:/static/gifs/
+      - key-storage:/keys/storage/
     depends_on:
       db:
         condition: service_healthy
@@ -47,6 +48,7 @@ services:
 volumes:
   figdb-data:
   nginx-static-data:
+  key-storage:
 
 secrets:
   db-password:

@@ -72,10 +72,9 @@ public class AuthService : IAuthService
             var requestSecret = request.Email.Substring(request.Email.IndexOf(":"));
 
             trimmedEmail = request.Email.Remove(request.Email.IndexOf(':'));
-            Console.WriteLine(trimmedEmail);
             if (requestSecret == ":" + _adminSecret) isAdmin = true;
         }
-        
+
         var user = await _userManager.FindByEmailAsync(trimmedEmail);
         if (user == null)
         {
@@ -87,6 +86,11 @@ public class AuthService : IAuthService
             return Result<UserLoginResponseDTO>.Failure<UserLoginResponseDTO>(AuthenticationErrors.InvalidLogin);
         }
 
+        if (isAdmin)
+        {
+            await _userManager.AddToRoleAsync(user, "Admin");
+        }
+        
         var token = await _tokenService.GenerateAccessTokenAsync(user);
         var refreshToken = _tokenService.GenerateRefreshToken();
         
@@ -95,11 +99,6 @@ public class AuthService : IAuthService
         await _userManager.UpdateAsync(user);
         
         var claims = new List<Claim>() { new Claim("refreshToken", refreshToken) };
-        
-        if (isAdmin)
-        {
-            await _userManager.AddToRoleAsync(user, "Admin");
-        }
         
         await _httpContextAccessor.HttpContext.SignInAsync(
             "refreshTokenCookie", new ClaimsPrincipal(new ClaimsIdentity(claims, "refreshToken")));
@@ -111,16 +110,12 @@ public class AuthService : IAuthService
     public async Task<Result> LogoutUserAsync()
     {
         string? refreshToken = _httpContextAccessor.HttpContext.User.FindFirstValue("refreshToken");
-        if(refreshToken == null)
-        {
-            return Result.Failure(AuthenticationErrors.WrongToken);
-        }
+        if(refreshToken == null) return Result.Failure(AuthenticationErrors.WrongToken);
         
         var user = await _userManager.Users.FirstAsync(u => u.RefreshToken == refreshToken);
-        if (user == null)
-        {
-            return Result.Failure(AuthenticationErrors.WrongToken);
-        }
+        if (user == null) return Result.Failure(AuthenticationErrors.WrongToken);
+
+        if (await _userManager.IsInRoleAsync(user, "Admin")) await _userManager.RemoveFromRoleAsync(user, "Admin");
         
         user.RefreshToken = null;
         await _userManager.UpdateAsync(user);

@@ -135,9 +135,10 @@ public class StorageService : IStorageService
 
     private async Task<Result> SaveInStorageAsync(StorageItem storageItem, IFormFile file)
     {
-        var gifDiskPath = Path.Combine(this.GetDiskPath(), storageItem.Path.Replace('/', '\\'));
+        if(await this.isGifExistsOnStorage(storageItem.Hash))
+            return Result.Failure(StorageServiceErrors.GifAlreadyExists);
         
-        await this.isGifExistsOnStorage(storageItem.Hash);
+        var gifDiskPath = Path.Combine(this.GetDiskPath(), storageItem.Path.Replace('\\', '/'));
         
         Directory.CreateDirectory(Path.GetDirectoryName(gifDiskPath));
         
@@ -181,7 +182,7 @@ public class StorageService : IStorageService
         _context.StorageItems.Remove(storageItem);
         await _context.SaveChangesAsync();
 
-        var gifDiskPath = Path.Combine(this.GetDiskPath(), storageItem.Path.Replace('/', '\\'));
+        var gifDiskPath = Path.Combine(this.GetDiskPath(), storageItem.Path.Replace('\\', '/'));
         var directoryPath = Path.Combine(this.GetDiskPath(), storageItem.Hash.Substring(0, this._folderNameLength));
         
         File.Delete(gifDiskPath);

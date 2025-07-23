@@ -36,7 +36,6 @@ export class UploadFormComponent {
     formData.append("Tags", JSON.stringify(tags));
 
     this._fileService.UploadGif(formData).subscribe(res => {
-      console.log(res.status);
     });
   }
 
