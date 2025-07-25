@@ -15,6 +15,7 @@ export class MainPageComponent implements OnInit {
   private _fileService = inject(FileService);
   private cols: number = 4;
   private gifDisplayGrid: Array<Array<GifItem>> = [];
+  private mobileGifDisplayGrid: Array<Array<GifItem>> = [];
   public static: string = environment.static;
 
   ngOnInit(): void {
@@ -39,10 +40,18 @@ export class MainPageComponent implements OnInit {
         this.gifDisplayGrid[currentCol].push(gifs![i]);
         currentCol += 1;
       }
+
+      // form mobile grid
+      this.mobileGifDisplayGrid.push(this.gifDisplayGrid[0].concat(this.gifDisplayGrid[1]));
+      this.mobileGifDisplayGrid.push(this.gifDisplayGrid[2].concat(this.gifDisplayGrid[3]));
     });
   }
 
   GetGrid(): Array<Array<GifItem>> {
     return this.gifDisplayGrid;
+  }
+
+  GetMobileGrid(): Array<Array<GifItem>> {
+    return this.mobileGifDisplayGrid;
   }
 }

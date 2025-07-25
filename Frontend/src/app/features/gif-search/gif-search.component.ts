@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { SearchService } from '../../core/services/search.service';
 import { SearchResponse } from '../../core/model/search-response.dto';
 import { SearchResponseItem } from '../../core/model/search-response-item';
+import { environment } from '../../../environments/environment';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -13,6 +14,7 @@ import { RouterLink } from '@angular/router';
 export class GifSearchComponent {
   private _searchService = inject(SearchService);
   public foundItems: SearchResponseItem[] | undefined = undefined;
+  public static: string = environment.static; 
 
   onInputChange(event: any) {
     let input: string = event.target.value;

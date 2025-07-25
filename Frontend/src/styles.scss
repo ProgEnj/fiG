@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+    --color-fig-2000: oklch(0.5146 0.2000 288.03);
+    --color-fig-1000: oklch(0.5146 0.1000 288.03);
+}
+
 body,
 html {
     height: 100%;
@@ -16,7 +21,7 @@ img {
 }
 
 .btn {
-    background-color: #155dfc;
+    background-color: oklch(0.5146 0.2800 288.03);
     color: rgb(255, 255, 255);
     border: none;
     padding: 0.4rem;
